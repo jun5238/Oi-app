@@ -18,7 +18,7 @@
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
     body { margin: 0; padding: 0; background: #fff; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-    .logo-img { width: 140px; height: 140px; object-fit: contain; margin-bottom: 15px; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); }
+    .logo-img { width: 140px; height: 140px; object-fit: contain; margin-bottom: 15px; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); pointer-events: none; }
     .brand-name { font-size: 45px; font-weight: bold; color: #111; margin-bottom: 5px; letter-spacing: -1.5px; pointer-events: none; }
     .slogan { font-size: 22px; font-weight: bold; margin-bottom: 70px; color: #444; pointer-events: none; }
     .point-color { color: #4caf50; }
@@ -30,13 +30,13 @@
   <script>
     function myAlert(msg) { alert(msg); }
     function startApp() {
-      myAlert('🥒 오이(Oi) 앱 로그인 성공!\n\n홈 화면으로 이동합니다!');
-      window.location.href = 'home.html';
+      myAlert('🥒 오이(Oi) 앱 로그인 성공!\n\n동네 설정 화면으로 이동합니다!');
+      window.location.href = 'region.html';
     }
   </script>
 </head>
 <body>
-  <img src="main.png" alt="오이 로고" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2347/2347031.png'">
+  <img src="logo.png" alt="오이 로고" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2347/2347031.png'">
   <div class="brand-name">Oi</div>
   <div class="slogan"><span class="point-color">오</span>픈해줘 <span class="point-color">이</span>곳에</div>
   <button class="btn-kakao" onclick="startApp()">🟡 카카오로 3초 만에 시작하기</button>
