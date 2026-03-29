@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>오이(Oi) - 홈</title>
+  <style>
+    body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #f4f6f8; padding-bottom: 90px; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+    
+    .header { background: #fff; padding: 15px 20px; font-size: 20px; font-weight: bold; color: #111; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .header-logo { color: #4caf50; font-size: 24px; letter-spacing: -1px; }
+    
+    .container { padding: 15px; }
+    
+    .feed-card { background: #fff; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    .feed-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #111; }
+    .feed-desc { font-size: 14px; color: #666; line-height: 1.4; margin-bottom: 15px; }
+    .feed-meta { font-size: 12px; color: #aaa; display: flex; gap: 10px; }
+    
+    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 12px 0; border-top: 1px solid #eee; position: fixed; bottom: 0; left: 0; z-index: 9999; height: 75px; box-sizing: border-box; }
+    .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .nav-active { color: #333; }
+    .nav-icon { font-size: 24px; margin-bottom: 5px; display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div>풍기동 <span style="font-size:14px; color:#aaa;">▼</span></div>
+    <div class="header-logo">Oi</div>
+  </div>
+
+  <div class="container">
+    <div class="feed-card" onclick="myAlert('상세 페이지 준비 중!')">
+      <div class="feed-title">🥒 동네에 새로운 씨앗이 심어졌어요!</div>
+      <div class="feed-desc">컴포즈커피 풍기점 입점을 희망하는 이웃이 방금 씨앗을 심었습니다. 같이 물을 주러 가볼까요?</div>
+      <div class="feed-meta">
+        <span>방금 전</span>
+        <span>물주기 3명</span>
+      </div>
+    </div>
+
+    <div class="feed-card" onclick="myAlert('상세 페이지 준비 중!')">
+      <div class="feed-title">🎉 [공지] 올리브영 입점 확정!</div>
+      <div class="feed-desc">이웃님들의 뜨거운 물주기 화력 덕분에 올리브영 입점이 최종 확정되었습니다! 축하 쿠폰을 확인하세요.</div>
+      <div class="feed-meta">
+        <span>2시간 전</span>
+        <span>조회수 1,204</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item nav-active" onclick="location.href='home.html'"><span class="nav-icon">🏠</span>홈</div>
+    <div class="nav-item" onclick="myAlert('커뮤니티 준비 중!')"><span class="nav-icon">🏘️</span>커뮤니티</div>
+    <div class="nav-item" onclick="location.href='map.html'"><span class="nav-icon">📍</span>동네지도</div>
+    <div class="nav-item" onclick="myAlert('채팅창 준비 중!')"><span class="nav-icon">💬</span>채팅</div>
+    <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span>마이</div>
+  </div>
+
+  <script>
+    function myAlert(msg) { alert(msg); }
+  </script>
+</body>
+</html>
