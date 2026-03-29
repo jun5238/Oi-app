@@ -2,70 +2,83 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>오이(Oi) - 브랜드 선택</title>
   <style>
-    body { margin: 0; padding: 0; background-color: rgba(0,0,0,0.6); font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; }
-    .modal { background: #fff; border-radius: 25px 25px 0 0; padding: 30px 20px; box-sizing: border-box; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); animation: slideUp 0.3s ease-out; }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .title { font-weight: bold; font-size: 22px; color: #333; }
-    .close-btn { font-size: 24px; color: #999; cursor: pointer; border: none; background: none; padding: 0; }
-    .desc { font-size: 14px; color: #777; margin-bottom: 25px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding-bottom: 20px; }
-    .brand-card { border: 2px solid #eee; border-radius: 15px; padding: 25px 10px; text-align: center; cursor: pointer; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-    .brand-icon { font-size: 40px; margin-bottom: 12px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+    * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
+    body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #f4f6f8; padding-bottom: 75px; }
+    .header { background: #fff; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; }
+    .back-btn { position: absolute; left: 20px; top: 20px; font-size: 20px; cursor: pointer; pointer-events: auto; }
+    .search-container { background: #fff; padding: 15px 20px; border-bottom: 1px solid #eee; }
+    .search-box { display: flex; align-items: center; background: #f0f0f0; border-radius: 12px; padding: 12px 15px; }
+    .search-box input { flex: 1; border: none; background: transparent; font-size: 15px; pointer-events: auto; }
+    .search-icon { font-size: 18px; color: #888; margin-right: 10px; }
+    
+    .container { padding: 20px; }
+    .section-title { font-size: 18px; font-weight: bold; color: #111; margin-bottom: 15px; }
+    
+    .brand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .brand-card { background: #fff; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; pointer-events: auto; transition: transform 0.1s; }
+    .brand-card:active { transform: scale(0.95); }
+    .brand-icon { font-size: 40px; margin-bottom: 10px; }
     .brand-name { font-size: 16px; font-weight: bold; color: #333; }
-    .category { font-size: 12px; color: #999; margin-top: 6px; }
+    
+    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 0; border-top: 1px solid #eee; position: fixed; bottom: 0; left: 0; z-index: 9999; height: 75px; box-sizing: border-box; }
+    .nav-item { flex: 1; text-align: center; color: #aaa; font-weight: bold; text-decoration: none; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; height: 100%; pointer-events: auto; }
+    .nav-active { color: #333; }
+    .nav-icon { font-size: 24px; line-height: 1.2; }
+    .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
   </style>
-  <script>
-    function myAlert(msg) {
-      alert(msg);
-    }
-    
-    function selectBrand(brandName) {
-      myAlert('🎉 [' + brandName + '] 씨앗을 선택하셨습니다!\n\n이제 이웃들과 함께 물을 주는 [5번 씨앗 상세(물주기) 화면]으로 넘어갑니다!');
-      window.location.href = 'seed.html';
-    }
-    
-    function closePopup() {
-      window.location.href = 'map.html';
-    }
-  </script>
 </head>
 <body>
-  <div class="modal">
-    <div class="header">
-      <div class="title">어떤 브랜드를 원하세요?</div>
-      <button class="close-btn" onclick="closePopup()">✖</button>
+  <div class="header">
+    <span class="back-btn" onclick="history.back()">←</span>
+    브랜드 선택
+  </div>
+  
+  <div class="search-container">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="우리 동네에 입점했으면 하는 브랜드!">
     </div>
-    <div class="desc">현재 위치에 심을 브랜드 씨앗을 골라주세요!</div>
-    
-    <div class="grid">
+  </div>
+
+  <div class="container">
+    <div class="section-title">🔥 지금 뜨는 인기 브랜드 TOP 4</div>
+    <div class="brand-grid">
       <div class="brand-card" onclick="selectBrand('컴포즈커피')">
         <div class="brand-icon">☕</div>
         <div class="brand-name">컴포즈커피</div>
-        <div class="category">카페/디저트</div>
-      </div>
-      <div class="brand-card" onclick="selectBrand('스타벅스')">
-        <div class="brand-icon">🧜‍♀️</div>
-        <div class="brand-name">스타벅스</div>
-        <div class="category">카페/디저트</div>
       </div>
       <div class="brand-card" onclick="selectBrand('올리브영')">
         <div class="brand-icon">💄</div>
         <div class="brand-name">올리브영</div>
-        <div class="category">뷰티/쇼핑</div>
       </div>
       <div class="brand-card" onclick="selectBrand('서브웨이')">
         <div class="brand-icon">🌯</div>
         <div class="brand-name">서브웨이</div>
-        <div class="category">패스트푸드</div>
+      </div>
+      <div class="brand-card" onclick="selectBrand('맥도날드')">
+        <div class="brand-icon">🍔</div>
+        <div class="brand-name">맥도날드</div>
       </div>
     </div>
   </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="location.href='home.html'"><span class="nav-icon">🏠</span><span class="nav-text">홈</span></div>
+    <div class="nav-item" onclick="myAlert('커뮤니티 준비 중!')"><span class="nav-icon">🏘️</span><span class="nav-text">커뮤니티</span></div>
+    <div class="nav-item" onclick="location.href='map.html'"><span class="nav-icon">📍</span><span class="nav-text">동네지도</span></div>
+    <div class="nav-item" onclick="myAlert('채팅창 준비 중!')"><span class="nav-icon">💬</span><span class="nav-text">채팅</span></div>
+    <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span><span class="nav-text">마이</span></div>
+  </div>
+
+  <script>
+    function myAlert(msg) { alert(msg); }
+    function selectBrand(brandName) {
+      myAlert('🌱 [' + brandName + '] 씨앗을 선택하셨습니다!\n\n지도에서 심을 위치를 터치해주세요!');
+      window.location.href = 'map.html';
+    }
+  </script>
 </body>
 </html>
