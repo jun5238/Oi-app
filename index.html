@@ -2,27 +2,64 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오이(Oi) - 로고 대변신!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>오이(Oi) - 앱 설치</title>
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4caf50">
-  <link rel="apple-touch-icon" href="main.png"> <link rel="icon" href="main.png"> <style>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="오이(Oi)">
+  
+  <link rel="icon" type="image/png" href="main.png">
+  <link rel="apple-touch-icon" href="main.png">
+
+  <style>
     body { margin: 0; padding: 0; background: #fff; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-    .logo-img { width: 150px; height: 150px; object-fit: contain; margin-bottom: 20px; border-radius: 35px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-    .brand-name { font-size: 50px; font-weight: bold; color: #222; margin-bottom: 5px; }
-    .btn-kakao { width: 85%; max-width: 350px; padding: 18px; border-radius: 15px; font-weight: bold; font-size: 18px; border: none; background: #FEE500; cursor: pointer; }
+    
+    /* 로고가 메인 화면에 예쁘게 뜨게 하는 스타일 */
+    .logo-img { width: 140px; height: 140px; object-fit: contain; margin-bottom: 15px; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); }
+    
+    .brand-name { font-size: 45px; font-weight: bold; color: #111; margin-bottom: 5px; letter-spacing: -1.5px; }
+    .slogan { font-size: 22px; font-weight: bold; margin-bottom: 70px; color: #444; }
+    .point-color { color: #4caf50; }
+    
+    /* 카카오 로그인 버튼 스타일 */
+    .btn-kakao { width: 85%; max-width: 350px; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 18px; border: none; background: #FEE500; color: #191919; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.1s; }
+    .btn-kakao:active { transform: scale(0.98); }
+
+    .footer-link { margin-top: 25px; color: #aaa; text-decoration: underline; font-size: 13px; cursor: pointer; }
   </style>
+  
   <script>
+    // 모든 알림창은 myAlert 함수 사용! 
     function myAlert(msg) { alert(msg); }
-    function startApp() { window.location.href = 'region.html'; }
-    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; myAlert('🥒 오이(Oi)를 바탕화면에 설치해서 즐겨보세요!'); });
+
+    function startApp() {
+      myAlert('🥒 오이(Oi) 앱 시작!\n\n이제 동네를 설정하러 갑니다!');
+      window.location.href = 'region.html';
+    }
+
+    // 💡 폰이 "앱 설치할래?"라고 묻게 만드는 엔진
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // 설치 유도 로직 (필요시 추가 가능)
+    });
   </script>
 </head>
 <body>
+
   <img src="main.png" alt="오이 로고" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2347/2347031.png'">
+  
   <div class="brand-name">Oi</div>
-  <div style="font-size: 20px; font-weight: bold; margin-bottom: 50px; color: #4caf50;">오픈해줘 이곳에</div>
-  <button class="btn-kakao" onclick="startApp()">🟡 카카오로 시작하기</button>
+  <div class="slogan"><span class="point-color">오</span>픈해줘 <span class="point-color">이</span>곳에</div>
+  
+  <button class="btn-kakao" onclick="startApp()">🟡 카카오로 3초 만에 시작하기</button>
+  
+  <div class="footer-link" onclick="myAlert('준비 중인 기능입니다!')">이메일로 로그인</div>
+
 </body>
 </html>
