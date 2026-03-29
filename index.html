@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>오이(Oi) - 공식 앱 설치</title>
   
-  <link rel="manifest" href="./manifest.json">
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4caf50">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -31,11 +31,8 @@
       window.location.href = 'region.html';
     }
 
-    // 💡 브라우저에게 설치 가능함을 알리는 서비스 워커 등록 (PWA 필수 요건)
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(() => {
-        console.log('Service Worker Registered');
-      });
+      navigator.serviceWorker.register('sw.js');
     }
   </script>
 </head>
