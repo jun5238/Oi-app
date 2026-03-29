@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 리얼 성장 지도</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>오이(Oi) - 리얼 성장 카카오지도</title>
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
     
@@ -16,7 +15,7 @@
     .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; }
     .search-text { color: #888; font-size: 16px; font-weight: bold; pointer-events: none; }
 
-    .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: none; }
+    .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: auto; cursor: pointer; }
 
     .bottom-sheet { position: fixed; bottom: 75px; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; pointer-events: auto; }
     .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 3px; margin: 0 auto 20px; }
@@ -44,6 +43,7 @@
     .nav-icon { font-size: 24px; line-height: 1.2; }
     .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
   </style>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=여기에_카카오_앱키를_넣어주세요"></script>
 </head>
 <body>
   
@@ -99,14 +99,17 @@
     <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span><span class="nav-text">마이</span></div>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     function myAlert(msg) { alert(msg); }
     
-    var map = L.map('real-map', { zoomControl: false, attributionControl: false }).setView([36.7766, 127.0229], 15);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+    var mapContainer = document.getElementById('real-map');
+    var mapOption = { 
+        center: new kakao.maps.LatLng(36.7766, 127.0229),
+        level: 3 
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    var currentMarker = null;
+    var currentOverlay = null;
     var waterCount = 0;
     var currentStage = 0;
     var currentLatLng = null;
@@ -119,32 +122,43 @@
       { icon: '🥒✨', max: 30, boxSize: 170, fontSize: 170 }
     ];
 
-    map.on('click', function(e) {
-      if (currentMarker) map.removeLayer(currentMarker);
-      
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+      if (currentOverlay) {
+        currentOverlay.setMap(null);
+      }
       waterCount = 0;
       currentStage = 0;
-      currentLatLng = e.latlng;
+      currentLatLng = mouseEvent.latLng;
       
       drawMarker();
       showSheet();
     });
 
     function drawMarker() {
-      if (currentMarker) map.removeLayer(currentMarker);
+      if (currentOverlay) {
+        currentOverlay.setMap(null);
+      }
       
       var s = stages[currentStage];
-      var htmlStr = "<div class='brand-pin' style='width:"+s.boxSize+"px; height:"+s.boxSize+"px; font-size:"+s.fontSize+"px;'>"+s.icon+"</div>";
       
-      var seedIcon = L.divIcon({
-        className: 'custom-seed',
-        html: htmlStr,
-        iconSize: [s.boxSize, s.boxSize],
-        iconAnchor: [s.boxSize/2, s.boxSize]
+      var content = document.createElement('div');
+      content.className = 'brand-pin';
+      content.style.width = s.boxSize + 'px';
+      content.style.height = s.boxSize + 'px';
+      content.style.fontSize = s.fontSize + 'px';
+      content.innerHTML = s.icon;
+      content.onclick = function() {
+        showSheet();
+      };
+      
+      currentOverlay = new kakao.maps.CustomOverlay({
+        position: currentLatLng,
+        content: content,
+        yAnchor: 1,
+        zIndex: 3
       });
       
-      currentMarker = L.marker(currentLatLng, {icon: seedIcon}).addTo(map);
-      currentMarker.on('click', showSheet);
+      currentOverlay.setMap(map);
     }
 
     function showSheet() {
