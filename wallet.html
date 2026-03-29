@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오이(Oi) - 내 지갑</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #f4f6f9; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; height: 100vh; }
+    .header { background: #fff; padding: 15px 20px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .content { flex: 1; overflow-y: auto; padding: 20px; }
+    
+    /* 포인트 카드 */
+    .point-card { background: linear-gradient(135deg, #4caf50 0%, #81c784 100%); border-radius: 20px; padding: 30px 20px; color: #fff; box-shadow: 0 10px 20px rgba(76,175,80,0.3); margin-bottom: 30px; }
+    .point-label { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
+    .point-value { font-size: 36px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+    
+    /* 쿠폰 섹션 */
+    .section-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 15px; display: flex; justify-content: space-between; }
+    .coupon-card { background: #fff; border-radius: 15px; padding: 20px; display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-left: 5px solid #ff9800; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; }
+    .coupon-icon { font-size: 30px; }
+    .coupon-info { flex: 1; }
+    .coupon-name { font-weight: bold; font-size: 16px; color: #333; }
+    .coupon-desc { font-size: 12px; color: #999; margin-top: 4px; }
+    .coupon-btn { background: #fff3e0; color: #ff9800; border: 1px solid #ff9800; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; }
+
+    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; padding-bottom: 25px; z-index: 10; }
+    .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-active { color: #4caf50; }
+    .nav-icon { font-size: 22px; }
+  </style>
+  <script>
+    function myAlert(msg) {
+      alert(msg);
+    }
+  </script>
+</head>
+<body>
+  <div class="header">💰 내 지갑</div>
+  
+  <div class="content">
+    <div class="point-card" onclick="myAlert('포인트 적립/사용 내역으로 이동합니다!')">
+      <div class="point-label">나의 보유 오이 포인트</div>
+      <div class="point-value">🥒 12,500 P</div>
+      <div style="margin-top: 15px; font-size: 12px; text-decoration: underline; opacity: 0.8;">포인트 사용처 확인하기 &gt;</div>
+    </div>
+    
+    <div class="section-title">
+      <span>보유 쿠폰 (2)</span>
+      <span style="font-size: 13px; color: #4caf50; font-weight: normal;">전체보기 &gt;</span>
+    </div>
+    
+    <div class="coupon-card" onclick="myAlert('쿠폰 바코드가 생성됩니다!')">
+      <div class="coupon-icon">☕</div>
+      <div class="coupon-info">
+        <div class="coupon-name">컴포즈커피 풍기점</div>
+        <div class="coupon-desc">아메리카노 1잔 무료 쿠폰</div>
+      </div>
+      <div class="coupon-btn">사용하기</div>
+    </div>
+    
+    <div class="coupon-card" style="border-left-color: #2196f3;" onclick="myAlert('쿠폰 바코드가 생성됩니다!')">
+      <div class="coupon-icon">🌯</div>
+      <div class="coupon-info">
+        <div class="coupon-name">서브웨이 아산터미널점</div>
+        <div class="coupon-desc">에그마요 15cm 20% 할인권</div>
+      </div>
+      <div class="coupon-btn" style="color: #2196f3; border-color: #2196f3; background: #e3f2fd;">사용하기</div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="location.href='index.html'"><span class="nav-icon">🏠</span>홈</div>
+    <div class="nav-item" onclick="location.href='community.html'"><span class="nav-icon">🏘️</span>커뮤니티</div>
+    <div class="nav-item" onclick="location.href='map.html'"><span class="nav-icon">📍</span>지도</div>
+    <div class="nav-item nav-active"><span class="nav-icon">💰</span>지갑</div>
+    <div class="nav-item" onclick="myAlert('마이페이지 서비스 준비 중!')"><span class="nav-icon">👤</span>마이</div>
+  </div>
+</body>
+</html>
