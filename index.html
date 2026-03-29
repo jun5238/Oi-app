@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 단계별 성장 지도</title>
+  <title>오이(Oi) - 리얼 성장 지도</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #fff; }
@@ -14,7 +14,7 @@
     .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; }
     .search-text { color: #888; font-size: 16px; font-weight: bold; }
 
-    .brand-pin { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 3px solid #fff; font-size: 28px; background: #fff; }
+    .brand-pin { border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 3px solid #fff; background: #fff; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
 
     .bottom-sheet { position: fixed; bottom: 75px; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; }
     .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 3px; margin: 0 auto 20px; }
@@ -72,13 +72,14 @@
     var currentMarker = null;
     var waterCount = 0;
     var currentStage = 0;
+    var currentLatLng = null;
 
     var stages = [
-      { icon: '🌱', name: '새싹', max: 3 },
-      { icon: '🌿', name: '줄기', max: 7 },
-      { icon: '🌼', name: '오이꽃', max: 12 },
-      { icon: '🥒', name: '애기 오이', max: 20 },
-      { icon: '🥒✨', name: '어른 오이', max: 30 }
+      { icon: '🌱', name: '새싹', max: 3, boxSize: 40, fontSize: 20 },
+      { icon: '🌿', name: '줄기', max: 7, boxSize: 55, fontSize: 30 },
+      { icon: '🌼', name: '오이꽃', max: 12, boxSize: 70, fontSize: 40 },
+      { icon: '🥒', name: '애기 오이', max: 20, boxSize: 90, fontSize: 55 },
+      { icon: '🥒✨', name: '어른 오이', max: 30, boxSize: 120, fontSize: 75 }
     ];
 
     map.on('click', function(e) {
@@ -86,18 +87,28 @@
       
       waterCount = 0;
       currentStage = 0;
+      currentLatLng = e.latlng;
+      
+      drawMarker();
+      showSheet();
+    });
+
+    function drawMarker() {
+      if (currentMarker) map.removeLayer(currentMarker);
+      
+      var s = stages[currentStage];
+      var htmlStr = "<div class='brand-pin' style='width:"+s.boxSize+"px; height:"+s.boxSize+"px; font-size:"+s.fontSize+"px;'>"+s.icon+"</div>";
       
       var seedIcon = L.divIcon({
         className: 'custom-seed',
-        html: "<div class='brand-pin' id='marker-icon'>" + stages[currentStage].icon + "</div>",
-        iconSize: [50, 50], iconAnchor: [25, 25]
+        html: htmlStr,
+        iconSize: [s.boxSize, s.boxSize],
+        iconAnchor: [s.boxSize/2, s.boxSize/2]
       });
       
-      currentMarker = L.marker(e.latlng, {icon: seedIcon}).addTo(map);
+      currentMarker = L.marker(currentLatLng, {icon: seedIcon}).addTo(map);
       currentMarker.on('click', showSheet);
-      
-      showSheet();
-    });
+    }
 
     function showSheet() {
       document.getElementById('water-sheet').style.display = 'block';
@@ -111,11 +122,12 @@
       }
 
       waterCount++;
+      var s = stages[currentStage];
       
-      if (waterCount >= stages[currentStage].max && currentStage < stages.length - 1) {
+      if (waterCount >= s.max && currentStage < stages.length - 1) {
         currentStage++;
-        myAlert('🌟 축하합니다!! 이웃들의 물주기로 오이가 다음 단계로 성장했습니다!!');
-        document.getElementById('marker-icon').innerText = stages[currentStage].icon;
+        myAlert('🌟 축하합니다!! 이웃들의 물주기로 오이가 다음 단계로 쑥쑥 자라났습니다!!');
+        drawMarker();
       } else {
         myAlert('💦 물을 주었습니다! 쑥쑥 자라라!!');
       }
