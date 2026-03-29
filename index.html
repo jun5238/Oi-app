@@ -3,29 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오이(Oi) - 대문</title>
-  <style>
+  <title>오이(Oi) - 로고 대변신!</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4caf50">
+  <link rel="apple-touch-icon" href="main.png"> <link rel="icon" href="main.png"> <style>
     body { margin: 0; padding: 0; background: #fff; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-    .logo-img { width: 150px; height: 150px; object-fit: contain; margin-bottom: 10px; border-radius: 35px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-    .brand-name { font-size: 50px; font-weight: bold; color: #222; margin-bottom: 5px; letter-spacing: -2px; }
-    .slogan { font-size: 24px; font-weight: bold; margin-bottom: 80px; color: #333; }
-    .point-color { color: #4caf50; font-size: 30px; }
-    .btn-kakao { width: 85%; max-width: 350px; padding: 18px; border-radius: 15px; font-weight: bold; font-size: 18px; border: none; background: #FEE500; color: #191919; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .logo-img { width: 150px; height: 150px; object-fit: contain; margin-bottom: 20px; border-radius: 35px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .brand-name { font-size: 50px; font-weight: bold; color: #222; margin-bottom: 5px; }
+    .btn-kakao { width: 85%; max-width: 350px; padding: 18px; border-radius: 15px; font-weight: bold; font-size: 18px; border: none; background: #FEE500; cursor: pointer; }
   </style>
   <script>
     function myAlert(msg) { alert(msg); }
-    function startApp() {
-      myAlert('🥒 오이(Oi) 월드에 오신 걸 환영합니다!\n\n이제 동네 인증 화면으로 이동합니다!');
-      window.location.href = 'region.html'; // 2번 화면으로 연결!!
-    }
+    function startApp() { window.location.href = 'region.html'; }
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; myAlert('🥒 오이(Oi)를 바탕화면에 설치해서 즐겨보세요!'); });
   </script>
 </head>
 <body>
-  <img src="logo.png" alt="오이 로고" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2347/2347031.png'">
+  <img src="main.png" alt="오이 로고" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2347/2347031.png'">
   <div class="brand-name">Oi</div>
-  <div class="slogan"><span class="point-color">오</span>(픈해줘) <span class="point-color">이</span>(곳에)</div>
-  
-  <button class="btn-kakao" onclick="startApp()">🟡 카카오로 3초 만에 시작하기</button>
-  <div style="margin-top: 25px; color: #999; text-decoration: underline; font-size: 14px; cursor: pointer;">이메일로 로그인</div>
+  <div style="font-size: 20px; font-weight: bold; margin-bottom: 50px; color: #4caf50;">오픈해줘 이곳에</div>
+  <button class="btn-kakao" onclick="startApp()">🟡 카카오로 시작하기</button>
 </body>
 </html>
