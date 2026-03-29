@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오이(Oi) - B2B 비즈니스 센터</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #f0f2f5; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; height: 100vh; }
+    .header { background: #1a237e; padding: 18px 20px; font-size: 18px; font-weight: bold; color: #fff; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .content { flex: 1; overflow-y: auto; padding: 20px; }
+    
+    /* B2B 전용 카드 스타일 */
+    .biz-card { background: #fff; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
+    .biz-title { font-size: 14px; color: #666; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+    .biz-value { font-size: 32px; font-weight: bold; color: #d32f2f; margin-bottom: 10px; }
+    
+    /* 화력 게이지 */
+    .fire-bar { width: 100%; height: 12px; background: #eee; border-radius: 6px; overflow: hidden; margin: 15px 0; }
+    .fire-fill { width: 92%; height: 100%; background: linear-gradient(90deg, #ff5252, #d32f2f); border-radius: 6px; }
+    
+    /* 랭킹 리스트 */
+    .rank-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+    .rank-item:last-child { border-bottom: none; }
+    .rank-name { font-size: 15px; font-weight: bold; color: #333; }
+    .rank-count { font-size: 14px; color: #d32f2f; font-weight: bold; }
+
+    /* 결제 버튼 */
+    .buy-btn { width: 100%; background: #1a237e; color: #fff; border: none; padding: 18px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 12px rgba(26,35,126,0.3); }
+
+    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; padding-bottom: 25px; z-index: 10; }
+    .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-active { color: #1a237e; }
+    .nav-icon { font-size: 22px; }
+  </style>
+  <script>
+    function myAlert(msg) {
+      alert(msg);
+    }
+  </script>
+</head>
+<body>
+  <div class="header">🏢 B2B 데이터 비즈니스 센터</div>
+  
+  <div class="content">
+    <div class="biz-card" style="border-top: 5px solid #d32f2f;">
+      <div class="biz-title">🔥 풍기동 입점 수요 실시간 화력</div>
+      <div class="biz-value">9,876명</div>
+      <div style="font-size: 13px; color: #777;">지난주 대비 <span style="color: #d32f2f; font-weight: bold;">▲ 12% 상승</span></div>
+      <div class="fire-bar"><div class="fire-fill"></div></div>
+      <button class="buy-btn" onclick="myAlert('데이터 상세 리포트 구매 창으로 연결됩니다!')">실시간 입점 수요 데이터 구매하기 💸</button>
+    </div>
+    
+    <div class="biz-card">
+      <div class="biz-title">📊 풍기동 브랜드 선호도 TOP 3</div>
+      <div class="rank-item">
+        <span class="rank-name">1. ☕ 컴포즈커피</span>
+        <span class="rank-count">4,210명 심음</span>
+      </div>
+      <div class="rank-item">
+        <span class="rank-name">2. 💄 올리브영</span>
+        <span class="rank-count">3,150명 심음</span>
+      </div>
+      <div class="rank-item">
+        <span class="rank-name">3. 🌯 서브웨이</span>
+        <span class="rank-count">2,516명 심음</span>
+      </div>
+    </div>
+
+    <div class="biz-card" style="background: #e3f2fd; border: none;">
+      <div class="biz-title" style="color: #1976d2;">📢 타겟 마케팅</div>
+      <div style="font-size: 14px; color: #555; line-height: 1.6;">풍기동에서 씨앗을 심은 9,876명에게<br><b>입점 확정 쿠폰</b>을 즉시 발송하시겠습니까?</div>
+      <button class="buy-btn" style="background: #1976d2; margin-top: 15px;" onclick="myAlert('쿠폰 발송 패키지 결제 창으로 이동합니다!')">전용 쿠폰 발송하기 📩</button>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="location.href='index.html'"><span class="nav-icon">🏠</span>홈</div>
+    <div class="nav-item" onclick="location.href='map.html'"><span class="nav-icon">📍</span>지도</div>
+    <div class="nav-item" onclick="location.href='wallet.html'"><span class="nav-icon">💰</span>지갑</div>
+    <div class="nav-item nav-active"><span class="nav-icon">🏢</span>B2B</div>
+    <div class="nav-item" onclick="myAlert('마이페이지 서비스 준비 중!')"><span class="nav-icon">👤</span>마이</div>
+  </div>
+</body>
+</html>
