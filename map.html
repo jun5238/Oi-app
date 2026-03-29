@@ -3,26 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 쿠팡 스타일 맵</title>
+  <title>오이(Oi) - 쿠팡 스타일 맵 (완성형)</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #fff; }
-    
     #map-wrapper { flex: 1; position: relative; width: 100%; }
-    #real-map { width: 100%; height: 100%; z-index: 1; background: #f7f7f7; }
+    #real-map { width: 100%; height: 100%; z-index: 1; background: #f4f4f4; }
     
     /* 상단 심플 검색창 (쿠팡 느낌) */
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; }
-    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; }
     .search-text { color: #888; font-size: 16px; }
     
-    /* 쿠팡 스타일 핀 */
-    .marker-pin { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 6px rgba(0,0,0,0.2); border: 2px solid #fff; font-weight: bold; color: #fff; font-size: 16px; }
+    /* 쿠팡 스타일 둥근 핀 */
+    .marker-pin { width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 6px rgba(0,0,0,0.2); border: 2px solid #fff; font-weight: bold; color: #fff; font-size: 16px; }
     
+    /* 하단 버튼 시트 */
     .bottom-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: #fff; border-radius: 20px 20px 0 0; padding: 20px; box-sizing: border-box; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 1000; }
-    .plant-btn { width: 100%; padding: 18px; border-radius: 10px; font-weight: bold; font-size: 18px; border: none; background: #4caf50; color: #fff; cursor: pointer; }
+    .plant-btn { width: 100%; padding: 18px; border-radius: 10px; font-weight: bold; font-size: 18px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 4px 6px rgba(76,175,80,0.2); }
     
-    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; z-index: 2000; padding-bottom: 20px; }
+    /* 하단 메뉴바 */
+    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; z-index: 2000; padding-bottom: 25px; }
     .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
     .nav-active { color: #333; }
     .nav-icon { font-size: 22px; }
@@ -32,7 +33,7 @@
   
   <div id="map-wrapper">
     <div class="floating-top">
-      <div class="search-bar" onclick="myAlert('풍기동 검색!')">
+      <div class="search-bar" onclick="alert('두정동 주변 검색!')">
         <div class="search-text">🔍 집 근처 업체 검색</div>
       </div>
     </div>
@@ -48,37 +49,33 @@
     <div class="nav-item" onclick="location.href='index.html'"><span class="nav-icon">🏠</span>홈</div>
     <div class="nav-item" onclick="location.href='community.html'"><span class="nav-icon">🏘️</span>커뮤니티</div>
     <div class="nav-item nav-active"><span class="nav-icon">📍</span>동네지도</div>
-    <div class="nav-item"><span class="nav-icon">💬</span>채팅</div>
-    <div class="nav-item"><span class="nav-icon">👤</span>마이</div>
+    <div class="nav-item" onclick="alert('채팅 서비스 준비 중!')"><span class="nav-icon">💬</span>채팅</div>
+    <div class="nav-item" onclick="alert('마이페이지 서비스 준비 중!')"><span class="nav-icon">👤</span>마이</div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    function myAlert(msg) {
-      alert(msg);
-    }
-    
-    // 대표님이 주신 사진의 중심지인 '천안시 두정동'으로 좌표 세팅!
+    // 1. 지도 생성 (절대 안 터지는 CartoDB Light 엔진!!)
     var map = L.map('real-map', { zoomControl: false, attributionControl: false }).setView([36.8322, 127.1350], 16);
     
-    // 쿠팡 지도와 가장 흡사한 Esri Light Gray Canvas 스타일 적용!!
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    // 쿠팡과 가장 비슷한 '연회색+파스텔' 지도 데이터 꽂기!!
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19
     }).addTo(map);
 
-    // 사진 속 보라색 핀 구현
+    // 2. 보라색 핀 (6번)
     var purpleIcon = L.divIcon({
-      className: 'custom-div-icon',
+      className: 'custom-pin',
       html: "<div class='marker-pin' style='background:#9c27b0;'>6</div>",
-      iconSize: [40, 40], iconAnchor: [20, 40]
+      iconSize: [40, 40], iconAnchor: [20, 20]
     });
     L.marker([36.8335, 127.1340], {icon: purpleIcon}).addTo(map);
 
-    // 사진 속 오렌지 핀 구현
+    // 3. 오렌지 핀 (25번)
     var orangeIcon = L.divIcon({
-      className: 'custom-div-icon',
+      className: 'custom-pin',
       html: "<div class='marker-pin' style='background:#f37321;'>25</div>",
-      iconSize: [40, 40], iconAnchor: [20, 40]
+      iconSize: [40, 40], iconAnchor: [20, 20]
     });
     L.marker([36.8310, 127.1360], {icon: orangeIcon}).addTo(map);
   </script>
