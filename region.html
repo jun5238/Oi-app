@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오이(Oi) - 동네 인증</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #f9f9f9; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; }
+    .header { width: 100%; padding: 20px; box-sizing: border-box; font-size: 28px; font-weight: bold; color: #4caf50; margin-top: 30px; }
+    .desc { width: 85%; color: #666; font-size: 16px; margin-bottom: 30px; font-weight: bold; }
+    .search-box { width: 85%; padding: 15px; border: 2px solid #ddd; border-radius: 15px; font-size: 16px; margin-bottom: 20px; outline: none; box-sizing: border-box; }
+    .tag-container { display: flex; gap: 10px; width: 85%; margin-bottom: 40px; flex-wrap: wrap; }
+    .tag { background: #eee; color: #777; padding: 10px 15px; border-radius: 20px; font-size: 14px; cursor: pointer; }
+    .tag-active { background: #e8f5e9; color: #4caf50; font-weight: bold; }
+    .btn-green { width: 85%; padding: 18px; border-radius: 15px; font-weight: bold; font-size: 18px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: absolute; bottom: 40px; }
+  </style>
+  <script>
+    function myAlert(msg) {
+      alert(msg);
+    }
+    
+    function selectTag(element) {
+      let tags = document.getElementsByClassName('tag');
+      for(let i=0; i<tags.length; i++) {
+        tags[i].classList.remove('tag-active');
+      }
+      element.classList.add('tag-active');
+    }
+    
+    function goToMap() {
+      let activeTag = document.querySelector('.tag-active');
+      if(activeTag) {
+        myAlert(activeTag.innerText + ' 인증이 완료되었습니다! 오이밭으로 이동합니다! 🚀');
+        window.location.href = 'map.html';
+      } else {
+        myAlert('동네를 먼저 선택해주세요! 🥒');
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="header">📍 동네 설정</div>
+  <div class="desc">어느 동네의 핫플을 만드시겠어요?</div>
+  
+  <input type="text" class="search-box" placeholder="🔍 예) 아산시 풍기동" value="아산시 ">
+  
+  <div class="tag-container">
+    <div class="tag tag-active" onclick="selectTag(this)">풍기동</div>
+    <div class="tag" onclick="selectTag(this)">온천동</div>
+    <div class="tag" onclick="selectTag(this)">용화동</div>
+    <div class="tag" onclick="selectTag(this)">모종동</div>
+  </div>
+
+  <button class="btn-green" onclick="goToMap()">동네 인증하고 오이밭 가기</button>
+</body>
+</html>
