@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오이(Oi) - 씨앗 물주기</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #f4f6f9; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
+    .header { width: 100%; background: #fff; padding: 15px 20px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+    .back-btn { font-size: 20px; cursor: pointer; border: none; background: none; }
+    .content { flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 20px; box-sizing: border-box; }
+    .brand-icon { font-size: 90px; margin-top: 30px; margin-bottom: 10px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1)); }
+    .brand-name { font-size: 28px; font-weight: bold; color: #333; margin-bottom: 5px; }
+    .status { font-size: 18px; font-weight: bold; color: #4caf50; margin-bottom: 40px; }
+    .progress-box { width: 90%; background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+    .progress-bar { width: 100%; height: 16px; background: #eee; border-radius: 10px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { width: 65%; height: 100%; background: linear-gradient(90deg, #81c784, #4caf50); border-radius: 10px; transition: width 0.5s ease; }
+    .stats { display: flex; justify-content: space-between; font-size: 15px; font-weight: bold; color: #666; }
+    .target { color: #d32f2f; }
+    .water-btn { width: 90%; max-width: 350px; padding: 20px; border-radius: 20px; font-weight: bold; font-size: 20px; border: none; background: #2196f3; color: #fff; cursor: pointer; box-shadow: 0 8px 15px rgba(33,150,243,0.3); margin-top: 40px; animation: pulse 2s infinite; }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+  </style>
+  <script>
+    function myAlert(msg) {
+      alert(msg);
+    }
+
+    function goBack() {
+      window.location.href = 'map.html';
+    }
+
+    function giveWater() {
+      let fill = document.querySelector('.progress-fill');
+      fill.style.width = '70%';
+      myAlert('💦 콸콸콸! 물주기 성공!\n\n오이 포인트(+10P)가 적립되었습니다!\n이웃들이 조금만 더 모이면 대왕 오이로 진화합니다! 🥒✨');
+    }
+  </script>
+</head>
+<body>
+  <div class="header">
+    <button class="back-btn" onclick="goBack()">⬅ 뒤로</button>
+    <span>🌱 씨앗 상세</span>
+    <span style="width: 40px;"></span>
+  </div>
+
+  <div class="content">
+    <div class="brand-icon">☕</div>
+    <div class="brand-name">컴포즈커피 풍기점</div>
+    <div class="status">🥒 튼실한 어른 오이 단계</div>
+
+    <div class="progress-box">
+      <div style="font-size: 16px; color: #555; font-weight: bold;">오픈까지 남은 화력 🔥</div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <div class="stats">
+        <span>현재: 650명 💦</span>
+        <span class="target">목표: 1000명 🎯</span>
+      </div>
+    </div>
+
+    <button class="water-btn" onclick="giveWater()">물주기 💦 (+10명)</button>
+  </div>
+</body>
+</html>
