@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오이(Oi) - 메인 오이밭</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #e8f5e9; font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    .header { background: #fff; padding: 15px 20px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .map-area { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff); background-size: 60px 60px; background-position: 0 0, 30px 30px; opacity: 0.8; }
+    .center-pin { font-size: 50px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3)); z-index: 5; margin-bottom: 40px; }
+    .plant-btn { position: absolute; bottom: 30px; width: 80%; max-width: 350px; padding: 18px; border-radius: 30px; font-weight: bold; font-size: 18px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 8px 15px rgba(76,175,80,0.4); z-index: 10; }
+    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; z-index: 20; padding-bottom: 20px; }
+    .nav-item { flex: 1; text-align: center; font-size: 12px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-active { color: #4caf50; }
+    .nav-icon { font-size: 24px; }
+    .seed-marker { position: absolute; font-size: 30px; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2)); cursor: pointer; }
+  </style>
+  <script>
+    function myAlert(msg) {
+      alert(msg);
+    }
+    
+    function plantSeed() {
+      myAlert('🌱 이 위치에 씨앗을 심습니다!\n\n(곧 4번 브랜드 선택 팝업창으로 연결됩니다!)');
+    }
+    
+    function showSeedInfo(brand) {
+      myAlert('💦 [' + brand + '] 씨앗입니다!\n\n(곧 5번 물주기 진화 창으로 이동합니다!)');
+    }
+  </script>
+</head>
+<body>
+  <div class="header">
+    <span>📍 아산시 풍기동</span>
+    <span style="font-size: 20px;" onclick="myAlert('검색 및 알림 기능 준비 중!')">🔍 🔔</span>
+  </div>
+  
+  <div class="map-area">
+    <div class="seed-marker" style="top: 20%; left: 30%;" onclick="showSeedInfo('스타벅스')">☕</div>
+    <div class="seed-marker" style="top: 50%; left: 70%;" onclick="showSeedInfo('올리브영')">💄</div>
+    <div class="seed-marker" style="top: 70%; left: 20%;" onclick="showSeedInfo('서브웨이')">🌯</div>
+    
+    <div class="center-pin">📍</div>
+    
+    <button class="plant-btn" onclick="plantSeed()">여기에 오이 심기 🌱</button>
+  </div>
+  
+  <div class="bottom-nav">
+    <div class="nav-item nav-active" onclick="myAlert('현재 오이밭(지도) 화면입니다!')"><span class="nav-icon">📍</span>오이밭</div>
+    <div class="nav-item" onclick="myAlert('동네생활 커뮤니티 게시판으로 이동합니다!')"><span class="nav-icon">🏘️</span>동네생활</div>
+    <div class="nav-item" onclick="myAlert('이웃들과의 채팅창이 열립니다!')"><span class="nav-icon">💬</span>채팅</div>
+    <div class="nav-item" onclick="myAlert('내 지갑(포인트/쿠폰) 화면으로 이동합니다!')"><span class="nav-icon">💰</span>지갑</div>
+    <div class="nav-item" onclick="myAlert('B2B 기업용 대시보드 및 마이페이지!')"><span class="nav-icon">🏢</span>B2B</div>
+  </div>
+</body>
+</html>
