@@ -3,79 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 씨앗 심기 지도</title>
+  <title>오이(Oi) - 기억하는 지도</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #fff; }
     #map-wrapper { flex: 1; position: relative; width: 100%; height: 100%; }
     #real-map { width: 100%; height: 100%; z-index: 1; background: #f4f4f4; }
-    
-    .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; }
-    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; }
-    .search-text { color: #888; font-size: 16px; }
-    
-    /* 🚨 버튼이 절대 안 짤리게 하는 필살기 코드! */
     .bottom-sheet { position: fixed; bottom: 90px; left: 0; width: 100%; padding: 0 15px; box-sizing: border-box; z-index: 3000; }
-    .plant-btn { width: 100%; height: 60px; border-radius: 12px; font-weight: bold; font-size: 20px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 -5px 15px rgba(0,0,0,0.1), 0 5px 15px rgba(76,175,80,0.4); display: flex; justify-content: center; align-items: center; }
-    
+    .plant-btn { width: 100%; height: 60px; border-radius: 12px; font-weight: bold; font-size: 20px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(76,175,80,0.4); }
     .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; position: fixed; bottom: 0; left: 0; z-index: 4000; height: 75px; box-sizing: border-box; }
     .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; justify-content: center; align-items: center; }
     .nav-active { color: #333; }
-    .nav-icon { font-size: 24px; margin-bottom: 2px; }
-
+    .nav-icon { font-size: 24px; }
     .brand-pin { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 3px solid #fff; font-size: 24px; background: #fff; }
   </style>
 </head>
 <body>
-  
   <div id="map-wrapper">
-    <div class="floating-top">
-      <div class="search-bar">
-        <div class="search-text">🔍 지도를 터치해서 씨앗을 심으세요!</div>
-      </div>
-    </div>
-    
     <div id="real-map"></div>
-    
     <div class="bottom-sheet">
       <button class="plant-btn" onclick="goBrand()">여기에 오이 심기 🌱</button>
     </div>
   </div>
-
   <div class="bottom-nav">
     <div class="nav-item" onclick="location.href='index.html'"><span class="nav-icon">🏠</span>홈</div>
     <div class="nav-item" onclick="location.href='community.html'"><span class="nav-icon">🏘️</span>커뮤니티</div>
     <div class="nav-item nav-active"><span class="nav-icon">📍</span>동네지도</div>
-    <div class="nav-item" onclick="alert('준비 중!')"><span class="nav-icon">💬</span>채팅</div>
+    <div class="nav-item"><span class="nav-icon">💬</span>채팅</div>
     <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span>마이</div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     var map = L.map('real-map', { zoomControl: false, attributionControl: false }).setView([36.7766, 127.0229], 15);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
     var currentMarker = null;
 
-    // 🎯 지도를 누르면 핀이 그 자리에 생기는 마법!
-    map.on('click', function(e) {
+    // 저장된 위치가 있으면 불러오기!
+    var savedPos = localStorage.getItem('lastPos');
+    if(savedPos) {
+      var pos = JSON.parse(savedPos);
+      createMarker(pos);
+    }
+
+    map.on('click', function(e) { createMarker(e.latlng); });
+
+    function createMarker(latlng) {
       if (currentMarker) map.removeLayer(currentMarker);
-      
-      var seedIcon = L.divIcon({
-        className: 'custom-seed',
-        html: "<div class='brand-pin'>🥒</div>",
-        iconSize: [45, 45], iconAnchor: [22, 22]
-      });
-      
-      currentMarker = L.marker(e.latlng, {icon: seedIcon}).addTo(map);
-    });
+      var seedIcon = L.divIcon({ className: 'custom-seed', html: "<div class='brand-pin'>🥒</div>", iconSize: [45, 45], iconAnchor: [22, 22] });
+      currentMarker = L.marker(latlng, {icon: seedIcon}).addTo(map);
+      localStorage.setItem('lastPos', JSON.stringify(latlng)); // 🧠 위치 저장!
+    }
 
     function goBrand() {
-      if (!currentMarker) {
-        alert('먼저 지도를 터치해서 심을 자리를 골라주세요! 🌱');
-      } else {
-        window.location.href = 'brand.html';
-      }
+      if (!currentMarker) { alert('지도를 터치해서 심어주세요!'); }
+      else { window.location.href = 'brand.html'; }
     }
   </script>
 </body>
