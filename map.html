@@ -3,81 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 심플 오이밭</title>
+  <title>오이(Oi) - 쿠팡스타일 지도</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #fff; }
+    body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: #fff; }
     
-    #map-wrapper { flex: 1; position: relative; width: 100%; }
+    .top-bar { background: #f37321; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; font-weight: bold; font-size: 16px; z-index: 2000; }
+    .top-btn { border: 1px solid #fff; background: transparent; color: #fff; border-radius: 15px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
+    
+    #map-container { flex: 1; position: relative; width: 100%; }
     #real-map { width: 100%; height: 100%; z-index: 1; }
     
-    .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; }
+    .toggle-group { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); display: flex; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border-radius: 5px; z-index: 1000; overflow: hidden; }
+    .toggle-btn { padding: 10px 15px; font-size: 14px; font-weight: bold; border: none; background: #fff; color: #555; cursor: pointer; border-right: 1px solid #eee; }
+    .toggle-active { background: #e3f2fd; color: #1976d2; border-bottom: 2px solid #1976d2; }
+    .icon-btn { padding: 10px 15px; background: #fff; border: none; color: #1976d2; cursor: pointer; font-size: 16px; }
     
-    .search-bar { background: #fff; border-radius: 25px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 3px 10px rgba(0,0,0,0.1); margin-bottom: 10px; }
-    .search-text { color: #888; font-size: 16px; font-weight: bold; }
-    .profile-icon { width: 30px; height: 30px; background: #eee; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; color: #aaa; }
+    .legend-box { position: absolute; top: 70px; left: 10px; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1000; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #333; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-weight: bold; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
     
-    .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-    .filter-scroll::-webkit-scrollbar { display: none; }
-    .filter-chip { background: #fff; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.08); white-space: nowrap; border: 1px solid #eee; }
-    
-    .side-btn-group { position: absolute; bottom: 120px; left: 15px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-    .circle-btn { width: 45px; height: 45px; background: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 20px; cursor: pointer; }
-    
-    .bottom-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: #fff; border-radius: 20px 20px 0 0; padding: 25px 20px; box-sizing: border-box; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
-    .sheet-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin-top: -10px; margin-bottom: 20px; }
-    
-    .plant-btn { width: 100%; max-width: 350px; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 18px; border: none; background: #4caf50; color: #fff; cursor: pointer; }
+    .right-controls { position: absolute; bottom: 30px; right: 15px; display: flex; flex-direction: column; gap: 10px; align-items: center; z-index: 1000; }
+    .ctrl-box { background: #fff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; }
+    .ctrl-btn { width: 40px; height: 40px; background: #fff; border: none; font-size: 24px; color: #555; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+    .ctrl-btn:last-child { border-bottom: none; }
+    .round-btn { width: 40px; height: 40px; background: #fff; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: none; font-size: 18px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: #1976d2; }
+    .scan-btn { width: 60px; height: 60px; background: #f37321; border-radius: 50%; box-shadow: 0 4px 10px rgba(243,115,33,0.4); border: none; color: #fff; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 5px; cursor: pointer; }
     
     .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; z-index: 2000; padding-bottom: 20px; }
     .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
     .nav-active { color: #333; }
     .nav-icon { font-size: 22px; filter: grayscale(100%); opacity: 0.6; }
     .nav-active .nav-icon { filter: none; opacity: 1; }
+    
+    .leaflet-control-zoom { display: none !important; }
+    .leaflet-control-attribution { display: none !important; }
+    
+    .marker-pin { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 5px rgba(0,0,0,0.3); border: 2px solid #fff; }
+    .marker-num { transform: rotate(45deg); font-weight: bold; color: #fff; font-size: 16px; }
+    .cucumber-pin { background: #fff; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 3px 8px rgba(0,0,0,0.3); border: 3px solid #4caf50; }
   </style>
 </head>
 <body>
   
-  <div id="map-wrapper">
-    <div class="floating-top">
-      <div class="search-bar" onclick="myAlert('풍기동 검색창이 열립니다!')">
-        <div class="search-text">🔍 풍기동 주변 핫플 검색</div>
-        <div class="profile-icon">👤</div>
-      </div>
-      <div class="filter-scroll">
-        <div class="filter-chip">🌱 대왕오이 임박</div>
-        <div class="filter-chip">☕ 카페/디저트</div>
-        <div class="filter-chip">🍔 패스트푸드</div>
-        <div class="filter-chip">🎉 신규 오픈</div>
-      </div>
+  <div class="top-bar">
+    <div onclick="myAlert('뒤로 가기!')" style="cursor: pointer;">&lt; 오이(Oi)플렉스</div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button class="top-btn" onclick="myAlert('설정 창 오픈!')">스캐너 설정</button>
+      <span onclick="myAlert('도움말!')" style="cursor: pointer; border: 1px solid #fff; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">?</span>
+      <span onclick="myAlert('새로고침!')" style="cursor: pointer; font-size: 20px;">↻</span>
+    </div>
+  </div>
+
+  <div id="map-container">
+    <div class="toggle-group">
+      <button class="toggle-btn toggle-active" onclick="myAlert('오이밭 모드!')">가구 단위</button>
+      <button class="toggle-btn" onclick="myAlert('씨앗 모드!')">박스 단위</button>
+      <button class="icon-btn" onclick="myAlert('지도 설정!')">⚙️</button>
     </div>
     
+    <div class="legend-box">
+      <div class="legend-item"><div class="dot" style="background: #9e9e9e;"></div>완료된 오이</div>
+      <div class="legend-item"><div class="dot" style="background: #000;"></div>씨앗 대기</div>
+      <div class="legend-item"><div class="dot" style="background: #f44336;"></div>시든 오이</div>
+      <div class="legend-item"><div class="dot" style="background: #2196f3;"></div>1 그룹</div>
+      <div class="legend-item"><div class="dot" style="background: #ff9800;"></div>2 그룹</div>
+      <div class="legend-item"><div class="dot" style="background: #e91e63;"></div>3 그룹</div>
+      <div class="legend-item"><div class="dot" style="background: #9c27b0;"></div>4 그룹</div>
+    </div>
+
     <div id="real-map"></div>
     
-    <div class="side-btn-group">
-      <div class="circle-btn" onclick="myAlert('내 위치로 이동합니다!')">🎯</div>
-      <div class="circle-btn" onclick="myAlert('동네 홈으로 이동합니다!')">🏠</div>
-    </div>
-    
-    <div class="bottom-sheet">
-      <div class="sheet-handle"></div>
-      <div style="width: 100%; display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-        <div style="font-size: 40px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">🥒</div>
-        <div>
-          <div style="font-weight: bold; font-size: 16px; color: #333;">여기에 브랜드 씨앗 심기</div>
-          <div style="font-size: 13px; color: #777;">이웃들과 함께 물을 주고 오픈시켜봐요!</div>
-        </div>
+    <div class="right-controls">
+      <div class="ctrl-box">
+        <button class="ctrl-btn" onclick="map.zoomIn()">+</button>
+        <button class="ctrl-btn" onclick="map.zoomOut()">-</button>
       </div>
-      <button class="plant-btn" onclick="plantSeed()">씨앗 심기 팝업 열기 🌱</button>
+      <button class="round-btn" onclick="myAlert('색상 변경 모드!')">🎨</button>
+      <button class="round-btn" style="color: #999;" onclick="myAlert('내 위치로 이동!')">🎯</button>
+      <button class="scan-btn" onclick="plantSeed()">
+        <span style="font-size: 24px; margin-bottom: 2px;">🔲</span>
+        스캔
+      </button>
     </div>
   </div>
 
   <div class="bottom-nav">
     <div class="nav-item" onclick="location.href='index.html'"><span class="nav-icon">🏠</span>홈</div>
     <div class="nav-item" onclick="location.href='community.html'"><span class="nav-icon">🏘️</span>커뮤니티</div>
-    <div class="nav-item nav-active" onclick="myAlert('현재 오이밭(지도) 화면입니다!')"><span class="nav-icon">📍</span>동네지도</div>
+    <div class="nav-item nav-active" onclick="myAlert('현재 지도 화면입니다!')"><span class="nav-icon">📍</span>지도</div>
     <div class="nav-item" onclick="myAlert('채팅창이 열립니다!')"><span class="nav-icon">💬</span>채팅</div>
-    <div class="nav-item" onclick="myAlert('마이페이지!')"><span class="nav-icon">👤</span>나의 오이</div>
+    <div class="nav-item" onclick="myAlert('마이페이지!')"><span class="nav-icon">👤</span>마이</div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -86,24 +102,35 @@
       alert(msg);
     }
     
-    var map = L.map('real-map', { zoomControl: false, attributionControl: false }).setView([36.7836, 127.0041], 15);
+    var map = L.map('real-map', { zoomControl: false, attributionControl: false }).setView([36.8322, 127.1350], 16);
     
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19
     }).addTo(map);
 
+    function createCustomMarker(color, number) {
+      return L.divIcon({
+        className: 'custom-pin',
+        html: "<div class='marker-pin' style='background:" + color + ";'><div class='marker-num'>" + number + "</div></div>",
+        iconSize: [36, 36],
+        iconAnchor: [18, 36]
+      });
+    }
+
+    L.marker([36.8335, 127.1340], {icon: createCustomMarker('#9c27b0', '6')}).addTo(map);
+    L.marker([36.8320, 127.1335], {icon: createCustomMarker('#fff', '<span style="color:#000;">19</span>')}).addTo(map);
+    L.marker([36.8310, 127.1360], {icon: createCustomMarker('#fff', '<span style="color:#000;">25</span>')}).addTo(map);
+    
     var cucumberIcon = L.divIcon({
-      className: 'custom-icon',
-      html: "<div style='background:#fff; border-radius:50%; width:40px; height:40px; display:flex; justify-content:center; align-items:center; font-size:25px; box-shadow:0 3px 6px rgba(0,0,0,0.2); border:2px solid #4caf50;'>🥒</div>",
-      iconSize: [44, 44],
+      className: 'cucumber',
+      html: "<div class='cucumber-pin'>🥒</div>",
+      iconSize: [45, 45],
       iconAnchor: [22, 22]
     });
-
-    L.marker([36.7836, 127.0041], {icon: cucumberIcon}).addTo(map);
-    L.marker([36.7860, 127.0010], {icon: L.divIcon({className: 'custom-icon', html: "<div style='background:#fff; border-radius:50%; width:40px; height:40px; display:flex; justify-content:center; align-items:center; font-size:25px; box-shadow:0 3px 6px rgba(0,0,0,0.2);'>☕</div>", iconSize: [40,40]})}).addTo(map);
+    L.marker([36.8322, 127.1350], {icon: cucumberIcon}).addTo(map);
 
     function plantSeed() {
-      myAlert('🌱 4번 브랜드 선택 팝업창이 올라옵니다!!');
+      myAlert('🌱 (스캔 버튼) 씨앗 심기 팝업창(4번)이 열립니다!');
     }
   </script>
 </body>
