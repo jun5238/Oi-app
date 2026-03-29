@@ -3,35 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 아산 리얼 지도</title>
+  <title>오이(Oi) - 진짜 아산 오이밭</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #fff; }
-    #map-wrapper { flex: 1; position: relative; width: 100%; height: 100%; }
-    #real-map { width: 100%; height: 100%; z-index: 1; background: #f4f4f4; }
+    #map-wrapper { flex: 1; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; }
+    #real-map { flex: 1; width: 100%; z-index: 1; background: #f4f4f4; }
     
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; }
     .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; }
     .search-text { color: #888; font-size: 16px; }
     
-    .marker-pin { width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 6px rgba(0,0,0,0.2); border: 2px solid #fff; font-weight: bold; color: #fff; font-size: 16px; }
+    /* 숫자 대신 귀여운 로고 핀 스타일!! */
+    .brand-pin { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 3px solid #fff; font-size: 24px; background: #fff; cursor: pointer; transition: transform 0.2s; }
+    .brand-pin:active { transform: scale(1.2); }
     
-    /* 하단 버튼 시트를 살짝 위로 올려서 짤림 방지!! */
     .bottom-sheet { position: absolute; bottom: 85px; left: 0; width: 100%; padding: 0 15px; box-sizing: border-box; z-index: 1000; }
-    .plant-btn { width: 100%; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 18px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    .plant-btn { width: 100%; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 18px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(76,175,80,0.4); display: block; }
     
-    /* 하단 네비게이션바 - 바닥에 완전 고정!! */
-    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; position: fixed; bottom: 0; left: 0; z-index: 2000; padding-bottom: calc(constant(safe-area-inset-bottom) + 10px); padding-bottom: calc(env(safe-area-inset-bottom) + 10px); }
-    .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
+    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; position: fixed; bottom: 0; left: 0; z-index: 2000; height: 75px; box-sizing: border-box; padding-bottom: 15px; }
+    .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; cursor: pointer; }
     .nav-active { color: #333; }
-    .nav-icon { font-size: 22px; }
+    .nav-icon { font-size: 24px; }
   </style>
 </head>
 <body>
   
   <div id="map-wrapper">
     <div class="floating-top">
-      <div class="search-bar" onclick="myAlert('아산시 풍기동 주변 검색!')">
+      <div class="search-bar" onclick="myAlert('풍기동 핫플 검색!')">
         <div class="search-text">🔍 집 근처 업체 검색</div>
       </div>
     </div>
@@ -47,7 +47,7 @@
     <div class="nav-item" onclick="location.href='index.html'"><span class="nav-icon">🏠</span>홈</div>
     <div class="nav-item" onclick="location.href='community.html'"><span class="nav-icon">🏘️</span>커뮤니티</div>
     <div class="nav-item nav-active"><span class="nav-icon">📍</span>동네지도</div>
-    <div class="nav-item" onclick="myAlert('채팅창 오픈!')"><span class="nav-icon">💬</span>채팅</div>
+    <div class="nav-item" onclick="myAlert('채팅창 준비 중!')"><span class="nav-icon">💬</span>채팅</div>
     <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span>마이</div>
   </div>
 
@@ -55,28 +55,31 @@
   <script>
     function myAlert(msg) { alert(msg); }
     
-    /* 🎯 타겟 조준!! 아산시 풍기동/모종동 중심 좌표로 세팅!! */
     var map = L.map('real-map', { zoomControl: false, attributionControl: false }).setView([36.7766, 127.0229], 15);
     
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19
     }).addTo(map);
 
-    var purpleIcon = L.divIcon({
-      className: 'custom-pin',
-      html: "<div class='marker-pin' style='background:#9c27b0;'>6</div>",
-      iconSize: [40, 40], iconAnchor: [20, 20]
-    });
-    /* 풍기동 아이파크 근처에 핀 꽂기! */
-    L.marker([36.7750, 127.0200], {icon: purpleIcon}).addTo(map);
+    /* 의미 없는 숫자 대신, 진짜 브랜드 씨앗 핀 꽂기!! */
+    function createBrandMarker(lat, lng, icon, brandName) {
+      var customIcon = L.divIcon({
+        className: 'brand-marker',
+        html: "<div class='brand-pin' title='"+brandName+"'>"+icon+"</div>",
+        iconSize: [45, 45], iconAnchor: [22, 22]
+      });
+      L.marker([lat, lng], {icon: customIcon}).addTo(map).on('click', function() {
+        myAlert('💦 ['+brandName+'] 씨앗입니다!\n이웃들과 물을 주러 갈까요?');
+        window.location.href = 'seed.html';
+      });
+    }
 
-    var orangeIcon = L.divIcon({
-      className: 'custom-pin',
-      html: "<div class='marker-pin' style='background:#f37321;'>25</div>",
-      iconSize: [40, 40], iconAnchor: [20, 20]
-    });
-    /* 모종동 터미널 근처에 핀 꽂기! */
-    L.marker([36.7820, 127.0250], {icon: orangeIcon}).addTo(map);
+    // 아산 풍기동/모종동 곳곳에 씨앗 심기!!
+    createBrandMarker(36.7750, 127.0200, '☕', '컴포즈커피 풍기점');
+    createBrandMarker(36.7820, 127.0250, '🧜‍♀️', '스타벅스 아산터미널점');
+    createBrandMarker(36.7780, 127.0230, '💄', '올리브영 모종점');
+    createBrandMarker(36.7740, 127.0180, '🥒', '오이 1호점 예정지');
+
   </script>
 </body>
 </html>
