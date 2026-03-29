@@ -3,190 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 디테일 성장 UI</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #fff; }
-    #map-wrapper { flex: 1; position: relative; width: 100%; height: 100%; }
-    #real-map { width: 100%; height: 100%; z-index: 1; background: #f4f4f4; }
-    
-    .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; }
-    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; }
-    .search-text { color: #888; font-size: 16px; font-weight: bold; }
-
-    .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
-
-    .bottom-sheet { position: fixed; bottom: 75px; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; }
-    .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 3px; margin: 0 auto 20px; }
-    .sheet-title { font-size: 22px; font-weight: bold; text-align: center; margin: 0 0 10px 0; color: #111; }
-    .sheet-info { text-align: center; font-size: 14px; font-weight: bold; color: #555; margin-bottom: 25px; }
-    .point-color { color: #4caf50; }
-
-    .timeline-container { display: flex; justify-content: space-between; align-items: center; position: relative; margin-bottom: 30px; padding: 0 5px; }
-    .timeline-line { position: absolute; top: 30px; left: 30px; right: 30px; height: 4px; background: #eee; z-index: 1; }
-    .timeline-line-fill { position: absolute; top: 0; left: 0; height: 100%; background: #4caf50; width: 0%; transition: width 0.5s; }
-    
-    .timeline-step { display: flex; flex-direction: column; align-items: center; z-index: 2; position: relative; }
-    .step-circle { width: 60px; height: 60px; background: #fff; border: 3px solid #eee; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; transition: all 0.3s; }
-    .step-active .step-circle { border-color: #4caf50; box-shadow: 0 0 15px rgba(76,175,80,0.4); transform: scale(1.15); }
-    .step-done .step-circle { border-color: #4caf50; background: #e8f5e9; }
-    .step-label { font-size: 12px; font-weight: bold; color: #999; margin-top: 10px; }
-    .step-active .step-label { color: #4caf50; }
-
-    .plant-btn { width: 100%; height: 60px; border-radius: 12px; font-weight: bold; font-size: 20px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(76,175,80,0.4); }
-    .plant-btn:active { transform: scale(0.98); }
-
-    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 10px 0; border-top: 1px solid #eee; position: fixed; bottom: 0; left: 0; z-index: 4000; height: 75px; box-sizing: border-box; }
-    .nav-item { flex: 1; text-align: center; font-size: 11px; color: #aaa; font-weight: bold; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-    .nav-active { color: #333; }
-    .nav-icon { font-size: 24px; margin-bottom: 2px; }
-  </style>
-</head>
-<body>
+  <title>오이(Oi) - 앱 설치</title>
   
-  <div id="map-wrapper">
-    <div class="floating-top">
-      <div class="search-bar">
-        <div class="search-text">지도를 터치해서 씨앗을 심어보세요!</div>
-      </div>
-    </div>
-    
-    <div id="real-map"></div>
-    
-    <div class="bottom-sheet" id="water-sheet">
-      <div class="sheet-handle"></div>
-      <h2 class="sheet-title" id="stage-name">내 오이 키우기 🌱</h2>
-      <div class="sheet-info">다음 성장까지 물 <span class="point-color" id="need-water">3</span>번 필요</div>
-      
-      <div class="timeline-container">
-        <div class="timeline-line">
-          <div class="timeline-line-fill" id="timeline-fill"></div>
-        </div>
-        <div class="timeline-step step-active" id="step-0">
-          <div class="step-circle">🌱</div>
-          <div class="step-label">새싹</div>
-        </div>
-        <div class="timeline-step" id="step-1">
-          <div class="step-circle">🌿</div>
-          <div class="step-label">줄기</div>
-        </div>
-        <div class="timeline-step" id="step-2">
-          <div class="step-circle">🌼</div>
-          <div class="step-label">꽃</div>
-        </div>
-        <div class="timeline-step" id="step-3">
-          <div class="step-circle">🥒</div>
-          <div class="step-label">애기오이</div>
-        </div>
-        <div class="timeline-step" id="step-4">
-          <div class="step-circle">🥒✨</div>
-          <div class="step-label">성인오이</div>
-        </div>
-      </div>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4caf50">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="오이(Oi)">
+  
+  <link rel="icon" type="image/png" href="main.png">
+  <link rel="apple-touch-icon" href="main.png">
 
-      <button class="plant-btn" onclick="giveWater()">오이 물주기 💦</button>
-    </div>
-  </div>
-
-  <div class="bottom-nav">
-    <div class="nav-item" onclick="location.href='index.html'"><span class="nav-icon">🏠</span>홈</div>
-    <div class="nav-item" onclick="location.href='community.html'"><span class="nav-icon">🏘️</span>커뮤니티</div>
-    <div class="nav-item nav-active"><span class="nav-icon">📍</span>동네지도</div>
-    <div class="nav-item" onclick="myAlert('채팅창 준비 중!')"><span class="nav-icon">💬</span>채팅</div>
-    <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span>마이</div>
-  </div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
+    body { margin: 0; padding: 0; background: #fff; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+    .logo-img { width: 140px; height: 140px; object-fit: contain; margin-bottom: 15px; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); }
+    .brand-name { font-size: 45px; font-weight: bold; color: #111; margin-bottom: 5px; letter-spacing: -1.5px; pointer-events: none; }
+    .slogan { font-size: 22px; font-weight: bold; margin-bottom: 70px; color: #444; pointer-events: none; }
+    .point-color { color: #4caf50; }
+    .btn-kakao { width: 85%; max-width: 350px; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 18px; border: none; background: #FEE500; color: #191919; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.1s; pointer-events: auto; }
+    .btn-kakao:active { transform: scale(0.98); }
+    .footer-link { margin-top: 25px; color: #aaa; text-decoration: underline; font-size: 13px; cursor: pointer; pointer-events: auto; }
+  </style>
+  
   <script>
     function myAlert(msg) { alert(msg); }
-    
-    var map = L.map('real-map', { zoomControl: false, attributionControl: false }).setView([36.7766, 127.0229], 15);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
-
-    var currentMarker = null;
-    var waterCount = 0;
-    var currentStage = 0;
-    var currentLatLng = null;
-
-    var stages = [
-      { icon: '🌱', max: 3, boxSize: 60, fontSize: 60 },
-      { icon: '🌿', max: 7, boxSize: 85, fontSize: 85 },
-      { icon: '🌼', max: 12, boxSize: 110, fontSize: 110 },
-      { icon: '🥒', max: 20, boxSize: 135, fontSize: 135 },
-      { icon: '🥒✨', max: 30, boxSize: 170, fontSize: 170 }
-    ];
-
-    map.on('click', function(e) {
-      if (currentMarker) map.removeLayer(currentMarker);
-      
-      waterCount = 0;
-      currentStage = 0;
-      currentLatLng = e.latlng;
-      
-      drawMarker();
-      showSheet();
-    });
-
-    function drawMarker() {
-      if (currentMarker) map.removeLayer(currentMarker);
-      
-      var s = stages[currentStage];
-      var htmlStr = "<div class='brand-pin' style='width:"+s.boxSize+"px; height:"+s.boxSize+"px; font-size:"+s.fontSize+"px;'>"+s.icon+"</div>";
-      
-      var seedIcon = L.divIcon({
-        className: 'custom-seed',
-        html: htmlStr,
-        iconSize: [s.boxSize, s.boxSize],
-        iconAnchor: [s.boxSize/2, s.boxSize]
-      });
-      
-      currentMarker = L.marker(currentLatLng, {icon: seedIcon}).addTo(map);
-      currentMarker.on('click', showSheet);
-    }
-
-    function showSheet() {
-      document.getElementById('water-sheet').style.display = 'block';
-      updateUI();
-    }
-
-    function giveWater() {
-      if (currentStage >= stages.length - 1 && waterCount >= stages[currentStage].max) {
-        myAlert('🎉 완벽하게 다 자란 성인 오이입니다!! 수확하세요!!');
-        return;
-      }
-
-      waterCount++;
-      var s = stages[currentStage];
-      
-      if (waterCount >= s.max && currentStage < stages.length - 1) {
-        currentStage++;
-        myAlert('🌟 오이가 다음 단계로 폭풍 성장했습니다!!');
-        drawMarker();
-      } else {
-        myAlert('💦 물을 주었습니다! 쑥쑥 자라라!!');
-      }
-      
-      updateUI();
-    }
-
-    function updateUI() {
-      var stageInfo = stages[currentStage];
-      document.getElementById('stage-name').innerText = '내 오이 키우기 ' + stageInfo.icon;
-      
-      var remain = stageInfo.max - waterCount;
-      if (remain < 0) remain = 0;
-      document.getElementById('need-water').innerText = remain;
-
-      for(var i = 0; i < 5; i++) {
-        var el = document.getElementById('step-' + i);
-        el.className = 'timeline-step';
-        if(i < currentStage) el.className = 'timeline-step step-done';
-        if(i === currentStage) el.className = 'timeline-step step-active';
-      }
-
-      var fillPercent = (currentStage / 4) * 100;
-      document.getElementById('timeline-fill').style.width = fillPercent + '%';
+    function startApp() {
+      myAlert('🥒 오이(Oi) 앱 로그인 성공!\n\n홈 화면으로 이동합니다!');
+      window.location.href = 'home.html';
     }
   </script>
+</head>
+<body>
+  <img src="main.png" alt="오이 로고" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2347/2347031.png'">
+  <div class="brand-name">Oi</div>
+  <div class="slogan"><span class="point-color">오</span>픈해줘 <span class="point-color">이</span>곳에</div>
+  <button class="btn-kakao" onclick="startApp()">🟡 카카오로 3초 만에 시작하기</button>
+  <div class="footer-link" onclick="myAlert('준비 중인 기능입니다!')">이메일로 로그인</div>
 </body>
 </html>
