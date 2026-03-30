@@ -6,13 +6,13 @@
   <title>오이(Oi) - 리얼 성장 카카오지도</title>
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; background: #fff; }
     
-    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #e9ecef; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; }
-    
-    #real-map { position: absolute; top: 0; bottom: 75px; left: 0; right: 0; z-index: 1; background: #e9ecef; }
+    /* 🚨 지도 꽉 채우기 */
+    #real-map { position: absolute; top: 0; left: 0; width: 100%; bottom: 75px; z-index: 1; }
     
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
-    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; cursor: pointer; }
+    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; }
     .search-text { color: #888; font-size: 15px; font-weight: bold; pointer-events: none; }
 
     .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: auto; cursor: pointer; }
@@ -42,6 +42,8 @@
     .nav-icon { font-size: 24px; line-height: 1.2; }
     .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
   </style>
+  
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15"></script>
 </head>
 <body>
   
@@ -49,7 +51,7 @@
   
   <div class="floating-top">
     <div class="search-bar" onclick="location.reload();">
-      <div class="search-text">지도를 터치해서 심어보세요! (터치시 새로고침)</div>
+      <div class="search-text">지도를 터치해서 심어보세요! (안 보이면 새로고침)</div>
     </div>
   </div>
   
@@ -93,36 +95,22 @@
       { icon: '🥒✨', max: 30, boxSize: 170, fontSize: 170 }
     ];
 
-    function initMap() {
-      var mapContainer = document.getElementById('real-map');
-      var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
-      map = new kakao.maps.Map(mapContainer, mapOption);
-
-      kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-        if (currentOverlay) { currentOverlay.setMap(null); }
-        waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
-        drawMarker(); showSheet();
-      });
-    }
-
-    // 🚨 절대 실패 없는 카카오 지도 멱살 잡고 끌고 오기 코드!!
     window.onload = function() {
-        var script = document.createElement('script');
-        script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
-        
-        // 지도가 100% 도착하면 그때 실행!! (시간제한 없음)
-        script.onload = function() {
-            kakao.maps.load(function() {
-                initMap();
-            });
-        };
-        
-        // 만약 카카오 서버에서 우리를 막았다면 이 에러가 뜹니다!!
-        script.onerror = function() {
-            myAlert("🚨 카카오 서버 거부 🚨\n디벨로퍼스 도메인 설정(https://jun5238.github.io)이 안 되어 있거나 열쇠가 다릅니다!");
-        };
-        
-        document.head.appendChild(script);
+      setTimeout(function() {
+        if(typeof kakao === 'undefined') {
+          myAlert("앗! 브라우저가 지도를 차단했습니다!\n크롬(Chrome) 앱에서 열어주세요!");
+          return;
+        }
+        var mapContainer = document.getElementById('real-map');
+        var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
+        map = new kakao.maps.Map(mapContainer, mapOption);
+
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+          if (currentOverlay) { currentOverlay.setMap(null); }
+          waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
+          drawMarker(); showSheet();
+        });
+      }, 300); // 아주 살짝만 기다렸다가 그립니다!
     };
 
     function drawMarker() {
@@ -142,29 +130,24 @@
     function showSheet() { document.getElementById('water-sheet').style.display = 'block'; updateUI(); }
 
     function giveWater() {
-      if (currentStage >= stages.length - 1 && waterCount >= stages[currentStage].max) { myAlert('🎉 완벽하게 다 자란 성인 오이입니다!! 수확하세요!!'); return; }
+      if (currentStage >= stages.length - 1 && waterCount >= stages[currentStage].max) { myAlert('🎉 성인 오이 수확 완료!!'); return; }
       waterCount++;
-      var s = stages[currentStage];
-      if (waterCount >= s.max && currentStage < stages.length - 1) {
-        currentStage++; myAlert('🌟 오이가 다음 단계로 폭풍 성장했습니다!!'); drawMarker();
-      } else { myAlert('💦 물을 주었습니다! 쑥쑥 자라라!!'); }
+      if (waterCount >= stages[currentStage].max && currentStage < stages.length - 1) {
+        currentStage++; myAlert('🌟 오이 폭풍 성장!!'); drawMarker();
+      } else { myAlert('💦 물 주기 완료!'); }
       updateUI();
     }
 
     function updateUI() {
       var stageInfo = stages[currentStage];
       document.getElementById('stage-name').innerText = '내 오이 키우기 ' + stageInfo.icon;
-      var remain = stageInfo.max - waterCount;
-      if (remain < 0) remain = 0;
+      var remain = Math.max(0, stageInfo.max - waterCount);
       document.getElementById('need-water').innerText = remain;
       for(var i = 0; i < 5; i++) {
         var el = document.getElementById('step-' + i);
-        el.className = 'timeline-step';
-        if(i < currentStage) el.className = 'timeline-step step-done';
-        if(i === currentStage) el.className = 'timeline-step step-active';
+        el.className = i < currentStage ? 'timeline-step step-done' : (i === currentStage ? 'timeline-step step-active' : 'timeline-step');
       }
-      var fillPercent = (currentStage / 4) * 100;
-      document.getElementById('timeline-fill').style.width = fillPercent + '%';
+      document.getElementById('timeline-fill').style.width = ((currentStage / 4) * 100) + '%';
     }
   </script>
 </body>
