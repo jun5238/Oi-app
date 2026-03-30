@@ -9,10 +9,10 @@
     body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; background: #fff; }
     
     /* 🚨 지도 꽉 채우기 */
-    #real-map { position: absolute; top: 0; left: 0; width: 100%; bottom: 75px; z-index: 1; }
+    #real-map { position: absolute; top: 0; left: 0; width: 100%; bottom: 75px; z-index: 1; background: #e9ecef; }
     
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
-    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; }
+    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; cursor: pointer; }
     .search-text { color: #888; font-size: 15px; font-weight: bold; pointer-events: none; }
 
     .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: auto; cursor: pointer; }
@@ -42,16 +42,14 @@
     .nav-icon { font-size: 24px; line-height: 1.2; }
     .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
   </style>
-  
-  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15"></script>
 </head>
 <body>
   
   <div id="real-map"></div>
   
   <div class="floating-top">
-    <div class="search-bar" onclick="location.reload();">
-      <div class="search-text">지도를 터치해서 심어보세요! (안 보이면 새로고침)</div>
+    <div class="search-bar" onclick="window.location.href=window.location.pathname+'?v='+new Date().getTime();">
+      <div class="search-text">지도를 터치해서 심어보세요! (안 보이면 터치🔄)</div>
     </div>
   </div>
   
@@ -95,22 +93,32 @@
       { icon: '🥒✨', max: 30, boxSize: 170, fontSize: 170 }
     ];
 
+    // 🚨 여기서부터 진짜입니다! 카카오 지도를 강제로 불러오는 마법 코드!
     window.onload = function() {
-      setTimeout(function() {
-        if(typeof kakao === 'undefined') {
-          myAlert("앗! 브라우저가 지도를 차단했습니다!\n크롬(Chrome) 앱에서 열어주세요!");
-          return;
-        }
-        var mapContainer = document.getElementById('real-map');
-        var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
-        map = new kakao.maps.Map(mapContainer, mapOption);
+        var script = document.createElement('script');
+        // autoload=false 를 넣어서 카카오가 지맘대로 실행되는걸 막습니다!
+        script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
+        
+        script.onload = function() {
+            // 스크립트가 다 다운받아지면 그때서야 지도를 그립니다!
+            kakao.maps.load(function() {
+                var mapContainer = document.getElementById('real-map');
+                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
+                map = new kakao.maps.Map(mapContainer, mapOption);
 
-        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-          if (currentOverlay) { currentOverlay.setMap(null); }
-          waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
-          drawMarker(); showSheet();
-        });
-      }, 300); // 아주 살짝만 기다렸다가 그립니다!
+                kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                  if (currentOverlay) { currentOverlay.setMap(null); }
+                  waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
+                  drawMarker(); showSheet();
+                });
+            });
+        };
+        
+        script.onerror = function() {
+            myAlert("🚨 카카오 서버 거부 🚨\n디벨로퍼스 도메인 설정(https://jun5238.github.io) 확인이 필요합니다!");
+        };
+        
+        document.head.appendChild(script);
     };
 
     function drawMarker() {
