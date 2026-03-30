@@ -81,24 +81,35 @@
     ];
 
     window.onload = function() {
-        var script = document.createElement('script');
-        script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
-        script.onload = function() {
-            kakao.maps.load(function() {
-                var mapContainer = document.getElementById('real-map');
-                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
-                map = new kakao.maps.Map(mapContainer, mapOption);
-                kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-                  if (currentOverlay) { currentOverlay.setMap(null); }
-                  waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
-                  drawMarker(); showSheet();
+        var url = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
+        
+        fetch(url)
+        .then(function(res) {
+            if (!res.ok) {
+                res.text().then(function(txt) {
+                    myAlert("🚨 카카오가 보낸 진짜 에러 상세내역 🚨\n\n" + txt);
                 });
-            });
-        };
-        script.onerror = function() {
-            myAlert("카카오 서버 거부\n디벨로퍼스 도메인 설정을 확인해주세요!");
-        };
-        document.head.appendChild(script);
+            } else {
+                var script = document.createElement('script');
+                script.src = url;
+                script.onload = function() {
+                    kakao.maps.load(function() {
+                        var mapContainer = document.getElementById('real-map');
+                        var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
+                        map = new kakao.maps.Map(mapContainer, mapOption);
+                        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                          if (currentOverlay) { currentOverlay.setMap(null); }
+                          waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
+                          drawMarker(); showSheet();
+                        });
+                    });
+                };
+                document.head.appendChild(script);
+            }
+        })
+        .catch(function(err) {
+            myAlert("🚨 폰/브라우저 강력 차단 에러 🚨\n(광고차단앱/백신앱 원인 유력)\n\n상세: " + err.message);
+        });
     };
 
     function drawMarker() {
