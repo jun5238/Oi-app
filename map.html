@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 리얼 성장 카카오지도</title>
+  <meta name="referrer" content="origin">
+  <title>오이(Oi)</title>
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
     body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; background: #fff; }
@@ -34,8 +35,6 @@
     .nav-icon { font-size: 24px; line-height: 1.2; }
     .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
   </style>
-
-  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false"></script>
 </head>
 <body>
   <div id="real-map"></div>
@@ -82,24 +81,24 @@
     ];
 
     window.onload = function() {
-        // 카카오 지도가 로딩 실패했을 때
-        if (typeof kakao === 'undefined') {
-            myAlert("🚨 카카오 서버 거부 🚨\n디벨로퍼스 도메인 주소 끝에 '띄어쓰기'가 있는지 꼭 확인해주세요!");
-            return;
-        }
-
-        // 지도가 정상적으로 다운되었을 때
-        kakao.maps.load(function() {
-            var mapContainer = document.getElementById('real-map');
-            var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
-            map = new kakao.maps.Map(mapContainer, mapOption);
-            
-            kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-                if (currentOverlay) { currentOverlay.setMap(null); }
-                waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
-                drawMarker(); showSheet();
+        var script = document.createElement('script');
+        script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
+        script.onload = function() {
+            kakao.maps.load(function() {
+                var mapContainer = document.getElementById('real-map');
+                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
+                map = new kakao.maps.Map(mapContainer, mapOption);
+                kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                  if (currentOverlay) { currentOverlay.setMap(null); }
+                  waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
+                  drawMarker(); showSheet();
+                });
             });
-        });
+        };
+        script.onerror = function() {
+            myAlert("카카오맵 기능이 OFF 되어있습니다!\n디벨로퍼스 메뉴에서 [카카오맵] 사용 설정을 ON으로 켜주세요!");
+        };
+        document.head.appendChild(script);
     };
 
     function drawMarker() {
