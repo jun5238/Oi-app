@@ -3,26 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="referrer" content="origin">
   <title>오이(Oi) - 리얼 성장 카카오지도</title>
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
     body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; background: #fff; }
-    
-    /* 🚨 지도 꽉 채우기 */
     #real-map { position: absolute; top: 0; left: 0; width: 100%; bottom: 75px; z-index: 1; background: #e9ecef; }
-    
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
     .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; cursor: pointer; }
     .search-text { color: #888; font-size: 15px; font-weight: bold; pointer-events: none; }
-
     .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: auto; cursor: pointer; }
-
     .bottom-sheet { position: absolute; bottom: 75px; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; pointer-events: auto; }
     .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 3px; margin: 0 auto 20px; }
     .sheet-title { font-size: 22px; font-weight: bold; text-align: center; margin: 0 0 10px 0; color: #111; pointer-events: none; }
     .sheet-info { text-align: center; font-size: 14px; font-weight: bold; color: #555; margin-bottom: 25px; pointer-events: none; }
     .point-color { color: #4caf50; }
-
     .timeline-container { display: flex; justify-content: space-between; align-items: center; position: relative; margin-bottom: 30px; padding: 0 5px; pointer-events: none; }
     .timeline-line { position: absolute; top: 30px; left: 30px; right: 30px; height: 4px; background: #eee; z-index: 1; }
     .timeline-line-fill { position: absolute; top: 0; left: 0; height: 100%; background: #4caf50; width: 0%; transition: width 0.5s; }
@@ -32,10 +27,8 @@
     .step-done .step-circle { border-color: #4caf50; background: #e8f5e9; }
     .step-label { font-size: 12px; font-weight: bold; color: #999; margin-top: 10px; }
     .step-active .step-label { color: #4caf50; }
-
     .plant-btn { width: 100%; height: 60px; border-radius: 12px; font-weight: bold; font-size: 20px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(76,175,80,0.4); pointer-events: auto; }
     .plant-btn:active { transform: scale(0.98); }
-
     .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; display: flex; background: #fff; padding: 0; border-top: 1px solid #eee; z-index: 9999; height: 75px; box-sizing: border-box; }
     .nav-item { flex: 1; text-align: center; color: #aaa; font-weight: bold; text-decoration: none; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; height: 100%; pointer-events: auto; }
     .nav-active { color: #333; }
@@ -44,15 +37,12 @@
   </style>
 </head>
 <body>
-  
   <div id="real-map"></div>
-  
   <div class="floating-top">
     <div class="search-bar" onclick="window.location.href=window.location.pathname+'?v='+new Date().getTime();">
       <div class="search-text">지도를 터치해서 심어보세요! (안 보이면 터치🔄)</div>
     </div>
   </div>
-  
   <div class="bottom-sheet" id="water-sheet">
     <div class="sheet-handle"></div>
     <h2 class="sheet-title" id="stage-name">내 오이 키우기 🌱</h2>
@@ -67,7 +57,6 @@
     </div>
     <button class="plant-btn" onclick="giveWater()">오이 물주기 💦</button>
   </div>
-
   <div class="bottom-nav">
     <div class="nav-item" onclick="location.href='home.html'"><span class="nav-icon">🏠</span><span class="nav-text">홈</span></div>
     <div class="nav-item" onclick="myAlert('커뮤니티 준비 중!')"><span class="nav-icon">🏘️</span><span class="nav-text">커뮤니티</span></div>
@@ -78,13 +67,11 @@
 
   <script>
     function myAlert(msg) { alert(msg); }
-    
     var map;
     var currentOverlay = null;
     var waterCount = 0;
     var currentStage = 0;
     var currentLatLng = null;
-
     var stages = [
       { icon: '🌱', max: 3, boxSize: 60, fontSize: 60 },
       { icon: '🌿', max: 7, boxSize: 85, fontSize: 85 },
@@ -93,19 +80,14 @@
       { icon: '🥒✨', max: 30, boxSize: 170, fontSize: 170 }
     ];
 
-    // 🚨 여기서부터 진짜입니다! 카카오 지도를 강제로 불러오는 마법 코드!
     window.onload = function() {
         var script = document.createElement('script');
-        // autoload=false 를 넣어서 카카오가 지맘대로 실행되는걸 막습니다!
         script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
-        
         script.onload = function() {
-            // 스크립트가 다 다운받아지면 그때서야 지도를 그립니다!
             kakao.maps.load(function() {
                 var mapContainer = document.getElementById('real-map');
                 var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
                 map = new kakao.maps.Map(mapContainer, mapOption);
-
                 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
                   if (currentOverlay) { currentOverlay.setMap(null); }
                   waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
@@ -113,11 +95,9 @@
                 });
             });
         };
-        
         script.onerror = function() {
-            myAlert("🚨 카카오 서버 거부 🚨\n디벨로퍼스 도메인 설정(https://jun5238.github.io) 확인이 필요합니다!");
+            myAlert("카카오 서버 거부\n디벨로퍼스 도메인 설정을 확인해주세요!");
         };
-        
         document.head.appendChild(script);
     };
 
