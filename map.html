@@ -7,9 +7,10 @@
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
     
-    body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #fff; padding-bottom: 75px; }
-    #map-wrapper { flex: 1; position: relative; width: 100%; height: 100%; pointer-events: auto; }
-    #real-map { width: 100%; height: 100%; z-index: 1; background: #f4f4f4; }
+    body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #fff; overflow: hidden; }
+    
+    #map-wrapper { position: absolute; top: 0; left: 0; width: 100%; bottom: 75px; z-index: 1; pointer-events: auto; }
+    #real-map { width: 100%; height: 100%; background: #f4f4f4; }
     
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
     .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; }
@@ -17,7 +18,7 @@
 
     .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: auto; cursor: pointer; }
 
-    .bottom-sheet { position: fixed; bottom: 75px; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; pointer-events: auto; }
+    .bottom-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; pointer-events: auto; }
     .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 3px; margin: 0 auto 20px; }
     .sheet-title { font-size: 22px; font-weight: bold; text-align: center; margin: 0 0 10px 0; color: #111; pointer-events: none; }
     .sheet-info { text-align: center; font-size: 14px; font-weight: bold; color: #555; margin-bottom: 25px; pointer-events: none; }
@@ -37,7 +38,7 @@
     .plant-btn { width: 100%; height: 60px; border-radius: 12px; font-weight: bold; font-size: 20px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(76,175,80,0.4); pointer-events: auto; }
     .plant-btn:active { transform: scale(0.98); }
 
-    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 0; border-top: 1px solid #eee; position: fixed; bottom: 0; left: 0; z-index: 9999; height: 75px; box-sizing: border-box; }
+    .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; display: flex; background: #fff; padding: 0; border-top: 1px solid #eee; z-index: 9999; height: 75px; box-sizing: border-box; }
     .nav-item { flex: 1; text-align: center; color: #aaa; font-weight: bold; text-decoration: none; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; height: 100%; pointer-events: auto; }
     .nav-active { color: #333; }
     .nav-icon { font-size: 24px; line-height: 1.2; }
@@ -53,14 +54,11 @@
         <div class="search-text">지도를 터치해서 씨앗을 심어보세요!</div>
       </div>
     </div>
-    
     <div id="real-map"></div>
-    
     <div class="bottom-sheet" id="water-sheet">
       <div class="sheet-handle"></div>
       <h2 class="sheet-title" id="stage-name">내 오이 키우기 🌱</h2>
       <div class="sheet-info">다음 성장까지 물 <span class="point-color" id="need-water">3</span>번 필요</div>
-      
       <div class="timeline-container">
         <div class="timeline-line">
           <div class="timeline-line-fill" id="timeline-fill"></div>
@@ -86,7 +84,6 @@
           <div class="step-label">성인오이</div>
         </div>
       </div>
-
       <button class="plant-btn" onclick="giveWater()">오이 물주기 💦</button>
     </div>
   </div>
@@ -102,19 +99,7 @@
   <script>
     function myAlert(msg) { alert(msg); }
     
-    var mapContainer = document.getElementById('real-map');
-    var mapOption = { 
-        center: new kakao.maps.LatLng(36.7766, 127.0229),
-        level: 3 
-    };
-    var map = new kakao.maps.Map(mapContainer, mapOption);
-
-    // 지도가 부모 크기에 맞춰 제대로 렌더링되도록 0.5초 뒤 강제 새로고침 마법!
-    setTimeout(function() {
-        map.relayout();
-        map.setCenter(new kakao.maps.LatLng(36.7766, 127.0229));
-    }, 500);
-
+    var map;
     var currentOverlay = null;
     var waterCount = 0;
     var currentStage = 0;
@@ -128,17 +113,36 @@
       { icon: '🥒✨', max: 30, boxSize: 170, fontSize: 170 }
     ];
 
-    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-      if (currentOverlay) {
-        currentOverlay.setMap(null);
+    window.onload = function() {
+      try {
+        var mapContainer = document.getElementById('real-map');
+        var mapOption = { 
+            center: new kakao.maps.LatLng(36.7766, 127.0229),
+            level: 3 
+        };
+        map = new kakao.maps.Map(mapContainer, mapOption);
+
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+          if (currentOverlay) {
+            currentOverlay.setMap(null);
+          }
+          waterCount = 0;
+          currentStage = 0;
+          currentLatLng = mouseEvent.latLng;
+          
+          drawMarker();
+          showSheet();
+        });
+
+        setTimeout(function() {
+            map.relayout();
+            map.setCenter(new kakao.maps.LatLng(36.7766, 127.0229));
+        }, 500);
+
+      } catch (e) {
+        myAlert("앗! 카카오 지도 연결 에러: " + e.message + "\n디벨로퍼스 도메인 설정을 다시 확인해주세요!");
       }
-      waterCount = 0;
-      currentStage = 0;
-      currentLatLng = mouseEvent.latLng;
-      
-      drawMarker();
-      showSheet();
-    });
+    };
 
     function drawMarker() {
       if (currentOverlay) {
@@ -146,7 +150,6 @@
       }
       
       var s = stages[currentStage];
-      
       var content = document.createElement('div');
       content.className = 'brand-pin';
       content.style.width = s.boxSize + 'px';
@@ -177,10 +180,8 @@
         myAlert('🎉 완벽하게 다 자란 성인 오이입니다!! 수확하세요!!');
         return;
       }
-
       waterCount++;
       var s = stages[currentStage];
-      
       if (waterCount >= s.max && currentStage < stages.length - 1) {
         currentStage++;
         myAlert('🌟 오이가 다음 단계로 폭풍 성장했습니다!!');
@@ -188,14 +189,12 @@
       } else {
         myAlert('💦 물을 주었습니다! 쑥쑥 자라라!!');
       }
-      
       updateUI();
     }
 
     function updateUI() {
       var stageInfo = stages[currentStage];
       document.getElementById('stage-name').innerText = '내 오이 키우기 ' + stageInfo.icon;
-      
       var remain = stageInfo.max - waterCount;
       if (remain < 0) remain = 0;
       document.getElementById('need-water').innerText = remain;
