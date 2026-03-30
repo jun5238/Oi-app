@@ -109,6 +109,12 @@
     };
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
+    // 지도가 부모 크기에 맞춰 제대로 렌더링되도록 0.5초 뒤 강제 새로고침 마법!
+    setTimeout(function() {
+        map.relayout();
+        map.setCenter(new kakao.maps.LatLng(36.7766, 127.0229));
+    }, 500);
+
     var currentOverlay = null;
     var waterCount = 0;
     var currentStage = 0;
