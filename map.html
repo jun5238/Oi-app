@@ -35,7 +35,8 @@
     .nav-icon { font-size: 24px; line-height: 1.2; }
     .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
   </style>
-  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15"></script>
+  
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false"></script>
 </head>
 <body>
   <div id="map-wrapper">
@@ -85,21 +86,20 @@
     ];
 
     window.onload = function() {
-      if (typeof kakao === 'undefined') {
-        myAlert("카카오 지도 연결 에러! 새로고침 해주세요!");
-        return;
-      }
-      var mapContainer = document.getElementById('real-map');
-      var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 3 };
-      map = new kakao.maps.Map(mapContainer, mapOption);
+      // 카카오 지도가 100% 로딩 완료되었을 때만 지도를 그리게 하는 철통 방어 코드!!
+      kakao.maps.load(function() {
+        var mapContainer = document.getElementById('real-map');
+        var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 3 };
+        map = new kakao.maps.Map(mapContainer, mapOption);
 
-      kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-        if (currentOverlay) currentOverlay.setMap(null);
-        waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
-        drawMarker(); showSheet();
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+          if (currentOverlay) currentOverlay.setMap(null);
+          waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
+          drawMarker(); showSheet();
+        });
+
+        setTimeout(function() { map.relayout(); map.setCenter(new kakao.maps.LatLng(36.7766, 127.0229)); }, 300);
       });
-
-      setTimeout(function() { map.relayout(); map.setCenter(new kakao.maps.LatLng(36.7766, 127.0229)); }, 500);
     };
 
     function drawMarker() {
@@ -117,6 +117,7 @@
     }
 
     function showSheet() { document.getElementById('water-sheet').style.display = 'block'; updateUI(); }
+    
     function giveWater() {
       if (currentStage >= stages.length - 1 && waterCount >= stages[currentStage].max) { myAlert('🎉 완벽하게 다 자란 성인 오이입니다!! 수확하세요!!'); return; }
       waterCount++;
@@ -126,6 +127,7 @@
       } else { myAlert('💦 물을 주었습니다! 쑥쑥 자라라!!'); }
       updateUI();
     }
+    
     function updateUI() {
       var stageInfo = stages[currentStage];
       document.getElementById('stage-name').innerText = '내 오이 키우기 ' + stageInfo.icon;
