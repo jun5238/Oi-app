@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="referrer" content="origin">
   <title>오이(Oi) - 리얼 성장 카카오지도</title>
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
@@ -35,6 +34,8 @@
     .nav-icon { font-size: 24px; line-height: 1.2; }
     .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
   </style>
+
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false"></script>
 </head>
 <body>
   <div id="real-map"></div>
@@ -81,34 +82,23 @@
     ];
 
     window.onload = function() {
-        var url = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
-        
-        fetch(url)
-        .then(function(res) {
-            if (!res.ok) {
-                res.text().then(function(txt) {
-                    myAlert("🚨 카카오가 보낸 진짜 에러 상세내역 🚨\n\n" + txt);
-                });
-            } else {
-                var script = document.createElement('script');
-                script.src = url;
-                script.onload = function() {
-                    kakao.maps.load(function() {
-                        var mapContainer = document.getElementById('real-map');
-                        var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
-                        map = new kakao.maps.Map(mapContainer, mapOption);
-                        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-                          if (currentOverlay) { currentOverlay.setMap(null); }
-                          waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
-                          drawMarker(); showSheet();
-                        });
-                    });
-                };
-                document.head.appendChild(script);
-            }
-        })
-        .catch(function(err) {
-            myAlert("🚨 폰/브라우저 강력 차단 에러 🚨\n(광고차단앱/백신앱 원인 유력)\n\n상세: " + err.message);
+        // 카카오 지도가 로딩 실패했을 때
+        if (typeof kakao === 'undefined') {
+            myAlert("🚨 카카오 서버 거부 🚨\n디벨로퍼스 도메인 주소 끝에 '띄어쓰기'가 있는지 꼭 확인해주세요!");
+            return;
+        }
+
+        // 지도가 정상적으로 다운되었을 때
+        kakao.maps.load(function() {
+            var mapContainer = document.getElementById('real-map');
+            var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
+            map = new kakao.maps.Map(mapContainer, mapOption);
+            
+            kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                if (currentOverlay) { currentOverlay.setMap(null); }
+                waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
+                drawMarker(); showSheet();
+            });
         });
     };
 
