@@ -9,7 +9,6 @@
     
     body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #e9ecef; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; }
     
-    /* 🚨 도화지 크기 절대 고정!! 절대 안 쪼그라듭니다!! */
     #real-map { position: absolute; top: 0; bottom: 75px; left: 0; right: 0; z-index: 1; background: #e9ecef; }
     
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
@@ -77,7 +76,6 @@
     <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span><span class="nav-text">마이</span></div>
   </div>
 
-  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15"></script>
   <script>
     function myAlert(msg) { alert(msg); }
     
@@ -95,26 +93,37 @@
       { icon: '🥒✨', max: 30, boxSize: 170, fontSize: 170 }
     ];
 
-    // 🚨 무조건 화면이 다 준비되고 0.5초 뒤에 지도를 그립니다!!
-    setTimeout(function() {
-      try {
-        if (typeof kakao === 'undefined') {
-            myAlert("카카오 로딩 실패! 위쪽 검색창을 눌러 새로고침 해주세요!");
-            return;
-        }
-        var mapContainer = document.getElementById('real-map');
-        var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
-        map = new kakao.maps.Map(mapContainer, mapOption);
+    function initMap() {
+      var mapContainer = document.getElementById('real-map');
+      var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
+      map = new kakao.maps.Map(mapContainer, mapOption);
 
-        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-          if (currentOverlay) { currentOverlay.setMap(null); }
-          waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
-          drawMarker(); showSheet();
-        });
-      } catch (e) {
-        myAlert("지도 렌더링 에러: " + e.message);
-      }
-    }, 500);
+      kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        if (currentOverlay) { currentOverlay.setMap(null); }
+        waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
+        drawMarker(); showSheet();
+      });
+    }
+
+    // 🚨 절대 실패 없는 카카오 지도 멱살 잡고 끌고 오기 코드!!
+    window.onload = function() {
+        var script = document.createElement('script');
+        script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
+        
+        // 지도가 100% 도착하면 그때 실행!! (시간제한 없음)
+        script.onload = function() {
+            kakao.maps.load(function() {
+                initMap();
+            });
+        };
+        
+        // 만약 카카오 서버에서 우리를 막았다면 이 에러가 뜹니다!!
+        script.onerror = function() {
+            myAlert("🚨 카카오 서버 거부 🚨\n디벨로퍼스 도메인 설정(https://jun5238.github.io)이 안 되어 있거나 열쇠가 다릅니다!");
+        };
+        
+        document.head.appendChild(script);
+    };
 
     function drawMarker() {
       if (currentOverlay) currentOverlay.setMap(null);
@@ -126,25 +135,19 @@
       content.style.fontSize = s.fontSize + 'px';
       content.innerHTML = s.icon;
       content.onclick = function() { showSheet(); };
-      currentOverlay = new kakao.maps.CustomOverlay({
-        position: currentLatLng, content: content, yAnchor: 1, zIndex: 3
-      });
+      currentOverlay = new kakao.maps.CustomOverlay({ position: currentLatLng, content: content, yAnchor: 1, zIndex: 3 });
       currentOverlay.setMap(map);
     }
 
     function showSheet() { document.getElementById('water-sheet').style.display = 'block'; updateUI(); }
 
     function giveWater() {
-      if (currentStage >= stages.length - 1 && waterCount >= stages[currentStage].max) {
-        myAlert('🎉 완벽하게 다 자란 성인 오이입니다!! 수확하세요!!'); return;
-      }
+      if (currentStage >= stages.length - 1 && waterCount >= stages[currentStage].max) { myAlert('🎉 완벽하게 다 자란 성인 오이입니다!! 수확하세요!!'); return; }
       waterCount++;
       var s = stages[currentStage];
       if (waterCount >= s.max && currentStage < stages.length - 1) {
         currentStage++; myAlert('🌟 오이가 다음 단계로 폭풍 성장했습니다!!'); drawMarker();
-      } else {
-        myAlert('💦 물을 주었습니다! 쑥쑥 자라라!!');
-      }
+      } else { myAlert('💦 물을 주었습니다! 쑥쑥 자라라!!'); }
       updateUI();
     }
 
