@@ -19,10 +19,12 @@
     .step { width: 42px; height: 42px; background: #f8f9fa; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px !important; border: 2px solid #eee; transition: 0.2s; }
     .step-active { border-color: #4caf50; background: #e8f5e9; transform: scale(1.1); }
     .plant-btn { width: 100%; height: 50px; border-radius: 25px; font-weight: bold; font-size: 16px !important; border: none; background: #4caf50; color: #fff; box-shadow: 0 4px 10px rgba(76,175,80,0.3); }
-    .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; display: flex; background: #fff; border-top: 1px solid #f0f0f0; z-index: 9999; height: 75px; }
-    .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #bbb; text-decoration: none; font-size: 11px !important; font-weight: bold; }
+    
+    .bottom-nav { width: 100%; display: flex; background: #fff; padding: 0; border-top: 1px solid #eee; position: fixed; bottom: 0; left: 0; z-index: 9999; height: 75px; box-sizing: border-box; }
+    .nav-item { flex: 1; text-align: center; color: #aaa; font-weight: bold; text-decoration: none; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; height: 100%; pointer-events: auto; }
     .nav-active { color: #333; }
-    .nav-icon { font-size: 22px !important; margin-bottom: 4px; }
+    .nav-icon { font-size: 24px; line-height: 1.2; }
+    .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -44,11 +46,11 @@
     <button class="plant-btn" onclick="giveWater()">물 주기 💦 (남은: <span id="need-water">3</span>회)</button>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="location.href='home.html'"><span class="nav-icon">🏠</span>홈</div>
-    <div class="nav-item" onclick="myAlert('준비 중!')"><span class="nav-icon">🏘️</span>커뮤니티</div>
-    <div class="nav-item nav-active" onclick="location.href='map.html'"><span class="nav-icon">📍</span>동네지도</div>
-    <div class="nav-item" onclick="myAlert('준비 중!')"><span class="nav-icon">💬</span>채팅</div>
-    <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span>마이</div>
+    <div class="nav-item" onclick="location.href='home.html'"><span class="nav-icon">🏠</span><span class="nav-text">홈</span></div>
+    <div class="nav-item" onclick="myAlert('준비 중!')"><span class="nav-icon">🏘️</span><span class="nav-text">커뮤니티</span></div>
+    <div class="nav-item nav-active" onclick="location.href='map.html'"><span class="nav-icon">📍</span><span class="nav-text">동네지도</span></div>
+    <div class="nav-item" onclick="myAlert('준비 중!')"><span class="nav-icon">💬</span><span class="nav-text">채팅</span></div>
+    <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span><span class="nav-text">마이</span></div>
   </div>
   <script>
     function myAlert(msg) { alert(msg); }
