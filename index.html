@@ -5,88 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>오이(Oi) - 로그인</title>
   <style>
-    * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; box-sizing: border-box; }
-    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Malgun Gothic', sans-serif; overflow: hidden; background-color: #fcfdfc; display: flex; justify-content: center; align-items: center;}
-    
-    /* 🚨 [마법의 핵심!] 대표님의 통짜 이미지를 '전체 배경'으로 깝니다! */
-    .flattened-background {
-      width: 100%;
-      height: 100%;
-      max-width: 375px; /* 폰 화면 비율을 위해 최대 너비 고정 */
-      max-height: 812px;
-      /* 👇 🚨 깃허브에 올리신 index_design.png 이미지를 가져옵니다! */
-      background-image: url('index_design.png'); 
-      background-size: cover; background-position: center; background-repeat: no-repeat;
-      position: relative;
-    }
-
-    /* 🚨 [CSS 마스크 마법!] 이미지 위에 클릭/입력만 가능한 '투명 박스'를 띄웁니다! */
-    .functional-overlays { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
-    
-    /* 입력창 마스크 (연한 초록색 테두리 + 배경 투명) */
-    .mask-input { 
-      position: absolute; width: 85%; height: 7%; 
-      left: 50%; transform: translateX(-50%);
-      border: 1px solid #c8e6c9; 
-      border-radius: 12px;
-      font-size: 15px; 
-      /* 배경을 투명하게 해서 이미지 뒤의 drawn text를 보이게 하고, white로 drawn text를 가립니다. */
-      background: rgba(255, 255, 255, 0.95); /* subtle white base to obscure conflicts slightly */
-      padding: 0 15px; font-family: 'Malgun Gothic', sans-serif; 
-      pointer-events: auto; /* click is active */
-      box-shadow: 0 0px 5px rgba(0,0,0,0.01); /* subtlety hide drawn shadow conflict */
-    }
-    
-    .mask-email { top: 64.5%; /* Approximate position over drawn email box */ }
-    .mask-pw { top: 73.5%; }
-    
-    .mask-input:focus { border-color: #4caf50; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); background: #fff; }
-    
-    /* 로그인 버튼 마스크 */
-    .mask-btn-login { 
-      position: absolute; top: 83%; width: 85%; height: 7%; 
-      left: 50%; transform: translateX(-50%);
-      border-radius: 12px; background: #4caf50; border: none; 
-      color: #fff; font-weight: bold; font-size: 18px; 
-      cursor: pointer; pointer-events: auto;
-      box-shadow: 0 4px 12px rgba(76,175,80,0.25); 
-    }
-    .mask-btn-login:active { transform: translateX(-50%) scale(0.98); }
-
-    /* 회원가입 투명 링크 영역 */
-    .mask-link-signup {
-      position: absolute; top: 92.5%; left: 71%; 
-      width: 25%; height: 3%; 
-      pointer-events: auto; cursor: pointer; 
-      background: rgba(255,255,255,0.01); /* almost invisible */
-    }
-
-    /* 하단 메뉴 투명 클릭 영역 (5개 아이콘) */
-    .mask-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 75px; display: flex; }
-    .mask-nav-item { flex: 1; height: 100%; pointer-events: auto; cursor: pointer; background: rgba(255,255,255,0.01); }
-
+    * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none !important; box-sizing: border-box; }
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Malgun Gothic', sans-serif; background-color: #fcfdfc; background-image: url('index_design.png'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; }
+    .error-box { display: none; text-align: center; color: #fff; background: #ff4c4c; padding: 15px; font-weight: bold; position: absolute; top: 0; width: 100%; z-index: 9999; }
+    .input-wrapper { position: absolute; top: 52%; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .real-input { width: 85%; max-width: 350px; padding: 18px 20px; border-radius: 12px; border: 1px solid #c8e6c9; font-size: 15px; background: rgba(255, 255, 255, 0.95); font-family: 'Malgun Gothic', sans-serif; pointer-events: auto; }
+    .real-input:focus { border-color: #4caf50; background: #fff; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
+    .real-btn { width: 85%; max-width: 350px; padding: 18px; border-radius: 12px; background: #4caf50; color: #fff; font-size: 18px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(76,175,80,0.3); pointer-events: auto; }
+    .real-btn:active { transform: scale(0.97); }
+    .signup-text { margin-top: 15px; font-size: 14px; color: #666; pointer-events: auto; cursor: pointer; }
+    .signup-text span { color: #4caf50; font-weight: bold; text-decoration: underline; margin-left: 5px; }
+    .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; display: flex; z-index: 100; }
+    .nav-item { flex: 1; height: 100%; cursor: pointer; pointer-events: auto; }
   </style>
 </head>
-<body class="login-screen">
-  <div class="flattened-background">
-    
-    <main class="functional-overlays">
-      
-      <input type="email" class="mask-input mask-email" id="email" placeholder="이메일 주소" autocomplete="off">
-      <input type="password" class="mask-input mask-pw" id="pw" placeholder="비밀번호">
-      
-      <button class="mask-btn-login" onclick="handleLogin()">로그인</button>
-      
-      <div class="mask-link-signup" onclick="myAlert('회원가입 준비 중!')"></div>
+<body>
+  <div class="error-box" id="errorMsg">🚨 깃허브에 'index_design.png' 이미지를 업로드해주세요!</div>
+  
+  <div class="input-wrapper">
+    <input type="email" class="real-input" id="email" placeholder="이메일 주소" autocomplete="off">
+    <input type="password" class="real-input" id="pw" placeholder="비밀번호">
+    <button class="real-btn" onclick="handleLogin()">로그인</button>
+    <div class="signup-text" onclick="myAlert('회원가입 준비 중!')">아직 계정이 없으신가요? <span>회원가입</span></div>
+  </div>
 
-      <nav class="mask-nav">
-        <div class="mask-nav-item" onclick="location.href='home.html'"></div>
-        <div class="mask-nav-item" onclick="myAlert('커뮤니티 준비 중!')"></div>
-        <div class="mask-nav-item" onclick="location.href='map.html'"></div>
-        <div class="mask-nav-item" onclick="myAlert('채팅창 준비 중!')"></div>
-        <div class="mask-nav-item" onclick="myAlert('마이 준비 중!')"></div>
-      </nav>
-    </main>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="location.href='home.html'"></div>
+    <div class="nav-item" onclick="myAlert('커뮤니티 준비 중!')"></div>
+    <div class="nav-item" onclick="location.href='map.html'"></div>
+    <div class="nav-item" onclick="myAlert('채팅창 준비 중!')"></div>
+    <div class="nav-item" onclick="location.href='b2b.html'"></div>
   </div>
 
   <script>
@@ -100,6 +48,11 @@
       }
       location.href = 'home.html';
     }
+    var img = new Image();
+    img.onerror = function() {
+      document.getElementById('errorMsg').style.display = 'block';
+    };
+    img.src = 'index_design.png';
   </script>
 </body>
 </html>
