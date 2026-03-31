@@ -12,7 +12,7 @@
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
     .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; cursor: pointer; }
     .search-text { color: #888; font-size: 15px; font-weight: bold; pointer-events: none; }
-    .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: auto; cursor: pointer; }
+    .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.1s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: auto; cursor: pointer; transform-origin: bottom center; }
     .bottom-sheet { position: absolute; bottom: 75px; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; pointer-events: auto; }
     .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 3px; margin: 0 auto 20px; }
     .sheet-title { font-size: 22px; font-weight: bold; text-align: center; margin: 0 0 10px 0; color: #111; pointer-events: none; }
@@ -72,12 +72,14 @@
     var waterCount = 0;
     var currentStage = 0;
     var currentLatLng = null;
+    var currentPinElement = null;
+    var baseLevel = 4;
     var stages = [
-      { icon: '🌱', max: 3, boxSize: 60, fontSize: 60 },
-      { icon: '🌿', max: 7, boxSize: 85, fontSize: 85 },
-      { icon: '🌼', max: 12, boxSize: 110, fontSize: 110 },
-      { icon: '🥒', max: 20, boxSize: 135, fontSize: 135 },
-      { icon: '🥒✨', max: 30, boxSize: 170, fontSize: 170 }
+      { icon: '🌱', max: 3, baseSize: 40 },
+      { icon: '🌿', max: 7, baseSize: 55 },
+      { icon: '🌼', max: 12, baseSize: 70 },
+      { icon: '🥒', max: 20, baseSize: 85 },
+      { icon: '🥒✨', max: 30, baseSize: 110 }
     ];
 
     window.onload = function() {
@@ -86,17 +88,23 @@
         script.onload = function() {
             kakao.maps.load(function() {
                 var mapContainer = document.getElementById('real-map');
-                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
+                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: baseLevel };
                 map = new kakao.maps.Map(mapContainer, mapOption);
+                
                 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
                   if (currentOverlay) { currentOverlay.setMap(null); }
                   waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
-                  drawMarker(); showSheet();
+                  drawMarker();
+                  document.getElementById('water-sheet').style.display = 'none';
+                });
+
+                kakao.maps.event.addListener(map, 'zoom_changed', function() {
+                  updatePinSize();
                 });
             });
         };
         script.onerror = function() {
-            myAlert("카카오맵 기능이 OFF 되어있습니다!\n디벨로퍼스 메뉴에서 [카카오맵] 사용 설정을 ON으로 켜주세요!");
+            myAlert("카카오맵 기능이 OFF 되어있습니다!");
         };
         document.head.appendChild(script);
     };
@@ -104,15 +112,25 @@
     function drawMarker() {
       if (currentOverlay) currentOverlay.setMap(null);
       var s = stages[currentStage];
-      var content = document.createElement('div');
-      content.className = 'brand-pin';
-      content.style.width = s.boxSize + 'px';
-      content.style.height = s.boxSize + 'px';
-      content.style.fontSize = s.fontSize + 'px';
-      content.innerHTML = s.icon;
-      content.onclick = function() { showSheet(); };
-      currentOverlay = new kakao.maps.CustomOverlay({ position: currentLatLng, content: content, yAnchor: 1, zIndex: 3 });
+      currentPinElement = document.createElement('div');
+      currentPinElement.className = 'brand-pin';
+      currentPinElement.innerHTML = s.icon;
+      currentPinElement.onclick = function() { showSheet(); };
+      
+      currentOverlay = new kakao.maps.CustomOverlay({ position: currentLatLng, content: currentPinElement, yAnchor: 1, zIndex: 3 });
       currentOverlay.setMap(map);
+      updatePinSize();
+    }
+
+    function updatePinSize() {
+      if(!currentPinElement) return;
+      var levelDiff = map.getLevel() - baseLevel;
+      var scale = Math.pow(0.5, levelDiff);
+      var s = stages[currentStage];
+      var newSize = Math.max(10, s.baseSize * scale);
+      currentPinElement.style.width = newSize + 'px';
+      currentPinElement.style.height = newSize + 'px';
+      currentPinElement.style.fontSize = newSize + 'px';
     }
 
     function showSheet() { document.getElementById('water-sheet').style.display = 'block'; updateUI(); }
