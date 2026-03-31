@@ -3,74 +3,161 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 시작하기</title>
+  <title>Oi - 오이 마켓 로그인</title>
   <style>
+    /* Reset and Base Styles */
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; box-sizing: border-box; }
-    body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Malgun Gothic', sans-serif; background: linear-gradient(135deg, #f6fbf6 0%, #ffffff 40%, #e8f5e9 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    
-    .logo-box { width: 110px; height: 110px; background: #fff; border-radius: 35px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(76,175,80,0.15); margin-bottom: 20px; border: 2px solid #fff; overflow: hidden; }
-    .logo-img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .title { font-size: 40px; font-weight: 900; color: #111; margin-bottom: 5px; letter-spacing: -1px; }
-    
-    .subtitle { font-size: 20px; font-weight: bold; color: #555; margin-bottom: 25px; letter-spacing: -0.5px; }
-    .point-text { font-size: 34px; color: #4caf50; font-weight: 900; vertical-align: middle; }
-    
-    .welcome-box { background: rgba(255, 255, 255, 0.8); border: 1px solid #c8e6c9; border-radius: 15px; padding: 15px 20px; text-align: center; color: #333; font-size: 14px; margin-bottom: 30px; line-height: 1.5; box-shadow: 0 4px 10px rgba(0,0,0,0.03); width: 85%; max-width: 350px; }
-    .welcome-box strong { color: #4caf50; font-size: 15px; }
-    
-    .input-group { width: 85%; max-width: 350px; margin-bottom: 12px; }
-    .input-field { width: 100%; padding: 18px 20px; border-radius: 15px; border: 1px solid #e0e0e0; font-size: 15px; background: #fafafa; transition: 0.3s; font-family: 'Malgun Gothic', sans-serif; pointer-events: auto; }
-    .input-field:focus { border-color: #4caf50; background: #fff; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
-    
-    .login-btn { width: 85%; max-width: 350px; padding: 18px; border-radius: 15px; background: #4caf50; color: #fff; font-size: 18px; font-weight: bold; border: none; cursor: pointer; margin-top: 15px; box-shadow: 0 6px 15px rgba(76,175,80,0.3); transition: 0.2s; pointer-events: auto; }
-    .login-btn:active { transform: scale(0.97); }
-    
-    .signup-link { margin-top: 30px; font-size: 14px; color: #888; pointer-events: auto; cursor: pointer; }
-    .signup-link span { color: #4caf50; font-weight: bold; margin-left: 5px; text-decoration: underline; }
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; background: #fff; }
+
+    /* Main Screen Layout */
+    .screen { display: flex; flex-direction: column; height: 100%; }
+
+    /* Top Status Bar (Placeholder for visual context) */
+    .status-bar { height: 44px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; color: #111; font-weight: bold; border-bottom: 1px solid #eee; z-index: 10; }
+
+    /* Content Area */
+    .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 30px; }
+
+    /* Logo Section */
+    .logo-container { margin-bottom: 10px; text-align: center; }
+    .map-pin { position: relative; width: 80px; height: 80px; background: #fff; border-radius: 50%; border: 2px solid #ddd; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 0 auto 10px; }
+    .map-pin::after { content: ''; position: absolute; bottom: -20px; left: calc(50% - 12px); border-width: 20px 12px 0; border-style: solid; border-color: #ddd transparent transparent transparent; }
+    .map-pin-circle { width: 100%; height: 100%; background: #4caf50; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+    .cucumber-slice { width: 70%; height: 70%; background: #fff; border-radius: 50%; border: 4px solid #fff; position: relative; }
+    .cucumber-slice::after { content: ''; position: absolute; top: 10%; left: 10%; width: 80%; height: 80%; background: #fff; border-radius: 50%; background-image: radial-gradient(circle at center, translucent 0%, translucent 70%, #4caf50 71%, translucent 72%), radial-gradient(circle at 30% 30%, #4caf50 2px, transparent 3px), radial-gradient(circle at 70% 30%, #4caf50 2px, transparent 3px), radial-gradient(circle at 50% 70%, #4caf50 2px, transparent 3px); opacity: 0.2; }
+    .app-title { font-size: 50px; font-weight: bold; color: #111; margin-top: 10px; }
+
+    /* Slogan Section (Multi-part line with unique elements) */
+    .slogan { display: flex; align-items: flex-end; margin-bottom: 40px; font-weight: bold; font-size: 20px; }
+
+    /* Custom 'O' with Cucumber Details */
+    .custom-o { position: relative; display: flex; flex-direction: column; align-items: center; margin-right: 5px; }
+    .cucumber-circle-o { width: 45px; height: 45px; background: #fff; border: 4px solid #fff; border-radius: 50%; position: relative; overflow: hidden; }
+    .cucumber-circle-o::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px solid #4caf50; border-radius: 50%; }
+    .cucumber-circle-o::after { content: ''; position: absolute; top: 10%; left: 10%; width: 80%; height: 80%; background-image: radial-gradient(circle at center, translucent 0%, translucent 70%, #4caf50 71%, translucent 72%), radial-gradient(circle at 30% 30%, #4caf50 1px, transparent 2px), radial-gradient(circle at 70% 30%, #4caf50 1px, transparent 2px), radial-gradient(circle at 50% 70%, #4caf50 1px, transparent 2px); opacity: 0.2; }
+    .cucumber-stem-o { width: 10px; height: 15px; background: #4caf50; position: absolute; top: -12px; left: calc(50% - 5px); border-radius: 5px; }
+    .cucumber-stem-o::before, .cucumber-stem-o::after { content: ''; width: 6px; height: 6px; background: #4caf50; border-radius: 50%; position: absolute; top: -3px; }
+    .cucumber-stem-o::before { left: -3px; } .cucumber-stem-o::after { right: -3px; }
+    .o-vowel { font-size: 32px; color: #111; margin-top: -10px; margin-right: 2px; } /* Adjusting space for custom character */
+
+    /* Standard Slogan Text */
+    .slogan-text-middle { color: #111; margin: 0 10px 10px; }
+
+    /* Custom 'I' with Cucumber Details */
+    .custom-i { display: flex; flex-direction: column; align-items: center; margin-left: 2px; }
+    .cucumber-circle-i { width: 30px; height: 30px; background: #fff; border: 3px solid #fff; border-radius: 50%; position: relative; overflow: hidden; }
+    .cucumber-circle-i::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 1.5px solid #4caf50; border-radius: 50%; }
+    .cucumber-circle-i::after { content: ''; position: absolute; top: 10%; left: 10%; width: 80%; height: 80%; background-image: radial-gradient(circle at center, translucent 0%, translucent 70%, #4caf50 71%, translucent 72%), radial-gradient(circle at 30% 30%, #4caf50 0.5px, transparent 1px), radial-gradient(circle at 70% 30%, #4caf50 0.5px, transparent 1px), radial-gradient(circle at 50% 70%, #4caf50 0.5px, transparent 1px); opacity: 0.2; }
+    .cucumber-stem-i { width: 6px; height: 10px; background: #4caf50; position: absolute; top: -8px; left: calc(50% - 3px); border-radius: 3px; }
+    .i-vertical { font-size: 32px; color: #111; margin-top: -10px; }
+
+    /* Login Form Section */
+    .form-container { width: 100%; }
+    .form-item { margin-bottom: 20px; position: relative; }
+    .input-label { position: absolute; left: 20px; top: -12px; font-size: 13px; color: #888; background: #fff; padding: 0 5px; z-index: 5; }
+    .input-box { width: 100%; height: 60px; border-radius: 30px; border: 2px solid #eee; background: #fff; font-size: 16px; font-family: 'Malgun Gothic', sans-serif; pointer-events: auto; outline: none; transition: border-color 0.3s; z-index: 1; padding: 0 20px; }
+    .input-box:focus { border-color: #4caf50; }
+    .input-box[id="pw"] { font-family: password; } /* Masking password */
+
+    /* Login Button Section */
+    .login-btn-section { width: 100%; text-align: center; }
+    .login-btn { width: 100%; height: 60px; border-radius: 30px; border: none; background: #4caf50; color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3); pointer-events: auto; }
+    .login-btn-section span { color: #888; font-size: 14px; display: inline-block; margin-top: 10px; }
+    .login-btn-section .signup { color: #4caf50; font-weight: bold; cursor: pointer; pointer-events: auto; margin-left: 5px; }
+
+    /* Bottom Navigation Section */
+    .bottom-nav { height: 75px; background: #4caf50; display: flex; border-top: 1px solid #4caf50; z-index: 10; position: absolute; bottom: 0; left: 0; width: 100%; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #888; font-weight: bold; text-decoration: none; cursor: pointer; pointer-events: auto; }
+    .nav-item.active { color: #fff; }
+    .nav-icon { font-size: 24px; margin-bottom: 4px; }
+    .nav-text { font-size: 12px; }
+
+    /* Media Query for different device widths (for aspect ratio maintenance of status and nav) */
+    @media (max-width: 375px) { .bottom-nav { height: 65px; } }
   </style>
 </head>
 <body>
+  <div class="screen">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div>
+        <span>LTE</span>
+        <span>Wi-Fi</span>
+        <span>[Battery Icon]</span>
+      </div>
+    </div>
 
-  <div class="logo-box">
-    <img src="logo.png" class="logo-img">
-  </div>
-  
-  <div class="title">Oi</div>
-  
-  <div class="subtitle">
-    <span class="point-text">오</span>픈해줘 <span class="point-text">이</span>곳에
-  </div>
+    <div class="content">
+      <div class="logo-container">
+        <div class="map-pin">
+          <div class="map-pin-circle">
+            <div class="cucumber-slice"></div>
+          </div>
+        </div>
+        <div class="app-title">Oi</div>
+      </div>
 
-  <div class="welcome-box">
-    🌱 <strong>풍기동</strong> 이웃들과 함께<br>우리 동네 핫플을 만들어봐요!
+      <div class="slogan">
+        <div class="custom-o">
+          <div class="cucumber-stem-o"></div>
+          <div class="cucumber-circle-o"></div>
+          <span class="o-vowel">ㅗ</span>
+        </div>
+        
+        <span class="slogan-text-middle">픈해줘 이곳에</span>
+        
+        <div class="custom-i">
+          <div class="cucumber-circle-i">
+            <div class="cucumber-stem-i"></div>
+          </div>
+          <span class="i-vertical">ㅣ</span>
+        </div>
+      </div>
+
+      <div class="form-container">
+        <div class="form-item">
+          <label class="input-label" for="email">이메일 주소</label>
+          <input type="email" id="email" class="input-box" autocomplete="off">
+        </div>
+        <div class="form-item">
+          <label class="input-label" for="pw">비밀번호</label>
+          <input type="password" id="pw" class="input-box">
+        </div>
+      </div>
+
+      <div class="login-btn-section">
+        <button class="login-btn">로그인</button>
+        <span>아직 계정이 없으신가요?<span class="signup">회원가입</span></span>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active">
+        <div class="nav-icon">[Home Icon]</div>
+        <span class="nav-text">홈</span>
+      </a>
+      <a href="#" class="nav-item">
+        <div class="nav-icon">[Community Icon]</div>
+        <span class="nav-text">커뮤니티</span>
+      </a>
+      <a href="#" class="nav-item">
+        <div class="nav-icon">[Map Icon]</div>
+        <span class="nav-text">동네지도</span>
+      </a>
+      <a href="#" class="nav-item">
+        <div class="nav-icon">[Chat Icon]</div>
+        <span class="nav-text">채팅</span>
+      </a>
+      <a href="#" class="nav-item">
+        <div class="nav-icon">[My Icon]</div>
+        <span class="nav-text">마이</span>
+      </a>
+    </nav>
   </div>
-  
-  <div class="input-group">
-    <input type="email" class="input-field" id="email" placeholder="이메일 주소" autocomplete="off">
-  </div>
-  <div class="input-group">
-    <input type="password" class="input-field" id="pw" placeholder="비밀번호">
-  </div>
-  
-  <button class="login-btn" onclick="handleLogin()">로그인</button>
-  
-  <div class="signup-link" onclick="myAlert('회원가입 페이지는 열심히 준비 중입니다!')">아직 계정이 없으신가요? <span>회원가입</span></div>
 
   <script>
     function myAlert(msg) { alert(msg); }
-    
-    function handleLogin() {
-      var email = document.getElementById('email').value;
-      var pw = document.getElementById('pw').value;
-      
-      if(email === '' || pw === '') {
-        myAlert('이메일과 비밀번호를 모두 입력해주세요!');
-        return;
-      }
-      
-      location.href = 'home.html';
-    }
+    // Add interaction logic for login and navigation here
   </script>
 </body>
 </html>
