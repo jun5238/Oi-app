@@ -6,53 +6,127 @@
   <title>오이(Oi) - 로그인</title>
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none !important; box-sizing: border-box; }
-    body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Malgun Gothic', sans-serif; background-color: #fcfdfc; background-image: url('index_design.png'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; }
-    .error-box { display: none; text-align: center; color: #fff; background: #ff4c4c; padding: 15px; font-weight: bold; position: absolute; top: 0; width: 100%; z-index: 9999; }
-    .input-wrapper { position: absolute; top: 52%; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-    .real-input { width: 85%; max-width: 350px; padding: 18px 20px; border-radius: 12px; border: 1px solid #c8e6c9; font-size: 15px; background: rgba(255, 255, 255, 0.95); font-family: 'Malgun Gothic', sans-serif; pointer-events: auto; }
-    .real-input:focus { border-color: #4caf50; background: #fff; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
-    .real-btn { width: 85%; max-width: 350px; padding: 18px; border-radius: 12px; background: #4caf50; color: #fff; font-size: 18px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(76,175,80,0.3); pointer-events: auto; }
-    .real-btn:active { transform: scale(0.97); }
-    .signup-text { margin-top: 15px; font-size: 14px; color: #666; pointer-events: auto; cursor: pointer; }
-    .signup-text span { color: #4caf50; font-weight: bold; text-decoration: underline; margin-left: 5px; }
-    .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; display: flex; z-index: 100; }
-    .nav-item { flex: 1; height: 100%; cursor: pointer; pointer-events: auto; }
+    
+    body, html { 
+      margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Malgun Gothic', sans-serif; 
+      background-color: #fcfdfc;
+      overflow: hidden;
+    }
+
+    .main-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 500px; /* 폰 화면 비율 유지 */
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .design-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 1;
+      object-fit: cover; /* 사진을 화면에 꽉 채웁니다! */
+    }
+
+    .form-area {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end; /* 아래쪽으로 정렬 */
+      padding-bottom: 120px; /* 로그인 버튼 위치 조정 */
+    }
+
+    .input-box {
+      width: 85%;
+      height: 55px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      border: 1px solid #c8e6c9;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 0 15px;
+      font-size: 16px;
+      font-family: 'Malgun Gothic', sans-serif;
+      pointer-events: auto;
+    }
+
+    .login-btn {
+      width: 85%;
+      height: 55px;
+      border-radius: 12px;
+      background: #4caf50;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      pointer-events: auto;
+    }
+
+    .signup-area {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #666;
+      pointer-events: auto;
+    }
+
+    .signup-area span { color: #4caf50; font-weight: bold; text-decoration: underline; margin-left: 5px; }
+
+    .nav-mask {
+      position: absolute;
+      bottom: 0; left: 0; width: 100%; height: 80px;
+      display: flex;
+      z-index: 20;
+    }
+    .nav-btn { flex: 1; height: 100%; cursor: pointer; pointer-events: auto; }
   </style>
 </head>
 <body>
-  <div class="error-box" id="errorMsg">🚨 깃허브에 'index_design.png' 이미지를 업로드해주세요!</div>
-  
-  <div class="input-wrapper">
-    <input type="email" class="real-input" id="email" placeholder="이메일 주소" autocomplete="off">
-    <input type="password" class="real-input" id="pw" placeholder="비밀번호">
-    <button class="real-btn" onclick="handleLogin()">로그인</button>
-    <div class="signup-text" onclick="myAlert('회원가입 준비 중!')">아직 계정이 없으신가요? <span>회원가입</span></div>
-  </div>
 
-  <div class="bottom-nav">
-    <div class="nav-item" onclick="location.href='home.html'"></div>
-    <div class="nav-item" onclick="myAlert('커뮤니티 준비 중!')"></div>
-    <div class="nav-item" onclick="location.href='map.html'"></div>
-    <div class="nav-item" onclick="myAlert('채팅창 준비 중!')"></div>
-    <div class="nav-item" onclick="location.href='b2b.html'"></div>
+  <div class="main-container">
+    <img src="bg.png" class="design-bg" id="bgImg">
+
+    <div class="form-area">
+      <input type="email" class="input-box" id="email" placeholder="이메일 주소" autocomplete="off">
+      <input type="password" class="input-box" id="pw" placeholder="비밀번호">
+      <button class="login-btn" onclick="handleLogin()">로그인</button>
+      <div class="signup-area" onclick="myAlert('회원가입 준비 중!')">아직 계정이 없으신가요? <span>회원가입</span></div>
+    </div>
+
+    <div class="nav-mask">
+      <div class="nav-btn" onclick="location.href='home.html'"></div>
+      <div class="nav-btn" onclick="myAlert('준비 중!')"></div>
+      <div class="nav-btn" onclick="location.href='map.html'"></div>
+      <div class="nav-btn" onclick="myAlert('준비 중!')"></div>
+      <div class="nav-btn" onclick="location.href='b2b.html'"></div>
+    </div>
   </div>
 
   <script>
     function myAlert(msg) { alert(msg); }
+    
     function handleLogin() {
       var email = document.getElementById('email').value;
       var pw = document.getElementById('pw').value;
       if(email === '' || pw === '') {
-        myAlert('이메일과 비밀번호를 모두 입력해주세요!');
+        myAlert('이메일과 비밀번호를 모두 입력해주세요! 🥒');
         return;
       }
       location.href = 'home.html';
     }
-    var img = new Image();
-    img.onerror = function() {
-      document.getElementById('errorMsg').style.display = 'block';
+
+    /* 사진이 안 뜨면 경고를 띄워주는 친절한 기능! */
+    document.getElementById('bgImg').onerror = function() {
+      myAlert("🚨 깃허브에 'bg.png' 사진이 없어서 하얗게 보입니다! 사진 이름을 bg.png로 바꿔서 올려주세요!");
     };
-    img.src = 'index_design.png';
   </script>
 </body>
 </html>
