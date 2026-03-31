@@ -3,43 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 앱 설치</title>
-  
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4caf50">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="오이(Oi)">
-  
-  <link rel="icon" type="image/png" href="main.png">
-  <link rel="apple-touch-icon" href="main.png">
-
+  <title>오이(Oi) - 시작하기</title>
   <style>
-    * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
-    body { margin: 0; padding: 0; background: #fff; font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-    .logo-img { width: 140px; height: 140px; object-fit: contain; margin-bottom: 15px; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); pointer-events: none; }
-    .brand-name { font-size: 45px; font-weight: bold; color: #111; margin-bottom: 5px; letter-spacing: -1.5px; pointer-events: none; }
-    .slogan { font-size: 22px; font-weight: bold; margin-bottom: 70px; color: #444; pointer-events: none; }
-    .point-color { color: #4caf50; }
-    .btn-kakao { width: 85%; max-width: 350px; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 18px; border: none; background: #FEE500; color: #191919; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.1s; pointer-events: auto; }
-    .btn-kakao:active { transform: scale(0.98); }
-    .footer-link { margin-top: 25px; color: #aaa; text-decoration: underline; font-size: 13px; cursor: pointer; pointer-events: auto; }
+    * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; box-sizing: border-box; }
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Malgun Gothic', sans-serif; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    
+    .logo-box { width: 120px; height: 120px; background: #fff; border-radius: 35px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-bottom: 25px; font-size: 70px; border: 1px solid #f0f0f0; }
+    .title { font-size: 42px; font-weight: bold; color: #111; margin-bottom: 10px; letter-spacing: -1px; }
+    .subtitle { font-size: 18px; font-weight: bold; color: #555; margin-bottom: 50px; letter-spacing: -0.5px; }
+    .highlight { color: #4caf50; }
+    
+    .input-group { width: 85%; max-width: 350px; margin-bottom: 12px; }
+    .input-field { width: 100%; padding: 18px 20px; border-radius: 15px; border: 1px solid #e0e0e0; font-size: 15px; background: #fafafa; transition: 0.3s; font-family: 'Malgun Gothic', sans-serif; }
+    .input-field:focus { border-color: #4caf50; background: #fff; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
+    
+    .login-btn { width: 85%; max-width: 350px; padding: 18px; border-radius: 15px; background: #4caf50; color: #fff; font-size: 18px; font-weight: bold; border: none; cursor: pointer; margin-top: 15px; box-shadow: 0 6px 15px rgba(76,175,80,0.3); transition: 0.2s; pointer-events: auto; }
+    .login-btn:active { transform: scale(0.97); }
+    
+    .signup-link { margin-top: 30px; font-size: 14px; color: #888; pointer-events: auto; cursor: pointer; }
+    .signup-link span { color: #4caf50; font-weight: bold; margin-left: 5px; text-decoration: underline; }
   </style>
-  
-  <script>
-    function myAlert(msg) { alert(msg); }
-    function startApp() {
-      myAlert('🥒 오이(Oi) 앱 로그인 성공!\n\n동네 설정 화면으로 이동합니다!');
-      window.location.href = 'region.html';
-    }
-  </script>
 </head>
 <body>
-  <img src="logo.png" alt="오이 로고" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2347/2347031.png'">
-  <div class="brand-name">Oi</div>
-  <div class="slogan"><span class="point-color">오</span>픈해줘 <span class="point-color">이</span>곳에</div>
-  <button class="btn-kakao" onclick="startApp()">🟡 카카오로 3초 만에 시작하기</button>
-  <div class="footer-link" onclick="myAlert('준비 중인 기능입니다!')">이메일로 로그인</div>
+
+  <div class="logo-box">🥒</div>
+  
+  <div class="title">Oi</div>
+  <div class="subtitle"><span class="highlight">오</span>픈해줘 <span class="highlight">이</span>곳에</div>
+  
+  <div class="input-group">
+    <input type="email" class="input-field" id="email" placeholder="이메일 주소" autocomplete="off">
+  </div>
+  <div class="input-group">
+    <input type="password" class="input-field" id="pw" placeholder="비밀번호">
+  </div>
+  
+  <button class="login-btn" onclick="handleLogin()">로그인</button>
+  
+  <div class="signup-link" onclick="myAlert('회원가입 페이지는 열심히 준비 중입니다! 🛠️')">아직 계정이 없으신가요? <span>회원가입</span></div>
+
+  <script>
+    function myAlert(msg) { alert(msg); }
+    
+    function handleLogin() {
+      var email = document.getElementById('email').value;
+      var pw = document.getElementById('pw').value;
+      
+      if(email === '' || pw === '') {
+        myAlert('이메일과 비밀번호를 모두 입력해주세요! 🥒');
+        return;
+      }
+      
+      location.href = 'home.html';
+    }
+  </script>
 </body>
 </html>
