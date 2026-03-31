@@ -12,8 +12,18 @@
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
     .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; cursor: pointer; }
     .search-text { color: #888; font-size: 15px; font-weight: bold; pointer-events: none; }
-    .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: all 0.1s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: auto; cursor: pointer; transform-origin: bottom center; }
+    
+    /* 👈 새싹/오이 사이즈를 현실적이고 캐주얼하게 수정했습니다! */
+    .brand-pin { 
+      display: flex; justify-content: center; align-items: flex-end; 
+      transition: all 0.3s; 
+      pointer-events: auto; cursor: pointer; 
+      transform-origin: bottom center;
+    }
+    
+    /* 👈 처음엔 숨겨둡니다! */
     .bottom-sheet { position: absolute; bottom: 75px; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; pointer-events: auto; }
+    
     .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 3px; margin: 0 auto 20px; }
     .sheet-title { font-size: 22px; font-weight: bold; text-align: center; margin: 0 0 10px 0; color: #111; pointer-events: none; }
     .sheet-info { text-align: center; font-size: 14px; font-weight: bold; color: #555; margin-bottom: 25px; pointer-events: none; }
@@ -72,14 +82,12 @@
     var waterCount = 0;
     var currentStage = 0;
     var currentLatLng = null;
-    var currentPinElement = null;
-    var baseLevel = 4;
     var stages = [
-      { icon: '🌱', max: 3, baseSize: 40 },
-      { icon: '🌿', max: 7, baseSize: 55 },
-      { icon: '🌼', max: 12, baseSize: 70 },
-      { icon: '🥒', max: 20, baseSize: 85 },
-      { icon: '🥒✨', max: 30, baseSize: 110 }
+      { icon: '🌱', max: 3, baseSize: 35 },
+      { icon: '🌿', max: 7, baseSize: 50 },
+      { icon: '🌼', max: 12, baseSize: 65 },
+      { icon: '🥒', max: 20, baseSize: 80 },
+      { icon: '🥒✨', max: 30, baseSize: 100 }
     ];
 
     window.onload = function() {
@@ -88,23 +96,21 @@
         script.onload = function() {
             kakao.maps.load(function() {
                 var mapContainer = document.getElementById('real-map');
-                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: baseLevel };
+                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
                 map = new kakao.maps.Map(mapContainer, mapOption);
                 
                 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
                   if (currentOverlay) { currentOverlay.setMap(null); }
                   waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
                   drawMarker();
+                  
+                  // 👈 지도를 터치했을 땐 아래 창을 닫아둡니다!!
                   document.getElementById('water-sheet').style.display = 'none';
-                });
-
-                kakao.maps.event.addListener(map, 'zoom_changed', function() {
-                  updatePinSize();
                 });
             });
         };
         script.onerror = function() {
-            myAlert("카카오맵 기능이 OFF 되어있습니다!");
+            myAlert("카카오맵 기능 설정을 확인해주세요!");
         };
         document.head.appendChild(script);
     };
@@ -112,25 +118,21 @@
     function drawMarker() {
       if (currentOverlay) currentOverlay.setMap(null);
       var s = stages[currentStage];
-      currentPinElement = document.createElement('div');
-      currentPinElement.className = 'brand-pin';
-      currentPinElement.innerHTML = s.icon;
-      currentPinElement.onclick = function() { showSheet(); };
+      var content = document.createElement('div');
+      content.className = 'brand-pin';
       
-      currentOverlay = new kakao.maps.CustomOverlay({ position: currentLatLng, content: currentPinElement, yAnchor: 1, zIndex: 3 });
+      // 👈 사이즈를 캐주얼하게 줄였습니다!
+      content.style.width = s.baseSize + 'px';
+      content.style.height = s.baseSize + 'px';
+      content.style.fontSize = s.baseSize + 'px';
+      
+      content.innerHTML = s.icon;
+      
+      // 👈 오이를 터치할 때만 아래 창이 뜹니다!!
+      content.onclick = function() { showSheet(); };
+      
+      currentOverlay = new kakao.maps.CustomOverlay({ position: currentLatLng, content: content, yAnchor: 1, zIndex: 3 });
       currentOverlay.setMap(map);
-      updatePinSize();
-    }
-
-    function updatePinSize() {
-      if(!currentPinElement) return;
-      var levelDiff = map.getLevel() - baseLevel;
-      var scale = Math.pow(0.5, levelDiff);
-      var s = stages[currentStage];
-      var newSize = Math.max(10, s.baseSize * scale);
-      currentPinElement.style.width = newSize + 'px';
-      currentPinElement.style.height = newSize + 'px';
-      currentPinElement.style.fontSize = newSize + 'px';
     }
 
     function showSheet() { document.getElementById('water-sheet').style.display = 'block'; updateUI(); }
