@@ -3,87 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오이(Oi) - 로그인</title>
+  <title>오이(Oi) - 시작하기</title>
   <style>
-    * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none !important; box-sizing: border-box; }
-    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #fcfdfc; display: flex; justify-content: center; align-items: flex-start; overflow: hidden; }
-
-    .app-container {
-      position: relative;
-      width: 100%;
-      max-width: 500px;
-      height: 100vh;
-    }
-
-    .bg-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* 🚨 마법의 카멜레온 입력창 */
-    .clear-input {
-      position: absolute;
-      left: 10%;
-      width: 80%;
-      height: 6.5%; 
-      background: transparent; /* 처음엔 투명해서 그림 글씨가 보임! */
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #111;
-      padding: 0 15px;
-      font-family: 'Malgun Gothic', sans-serif;
-      pointer-events: auto;
-      z-index: 10;
-    }
-
-    /* 🚨 둔갑술 발동!! (터치하거나 글씨가 써져 있으면 불투명해져서 뒤를 가림!) */
-    .clear-input:focus,
-    .clear-input:valid {
-      background: #f6faf6; /* 배경 그림 안쪽과 비슷한 아주 연한 녹색으로 덮어버림! */
-      box-shadow: 0 0 5px rgba(0,0,0,0.05); /* 살짝 그림자 줘서 자연스럽게 */
-    }
-
-    #email { top: 52%; } 
-    #pw { top: 61%; } 
-
-    .clear-btn { position: absolute; left: 10%; top: 69.5%; width: 80%; height: 7%; background: transparent; border: none; cursor: pointer; pointer-events: auto; z-index: 10; }
-    .clear-signup { position: absolute; left: 60%; top: 78%; width: 30%; height: 4%; background: transparent; cursor: pointer; pointer-events: auto; z-index: 10; }
-    .nav-area { position: absolute; bottom: 0; left: 0; width: 100%; height: 10%; display: flex; z-index: 10; }
-    .nav-item { flex: 1; height: 100%; cursor: pointer; pointer-events: auto; }
+    * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; box-sizing: border-box; }
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Malgun Gothic', sans-serif; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    
+    .logo-box { width: 120px; height: 120px; background: #fff; border-radius: 35px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-bottom: 25px; border: 1px solid #f0f0f0; overflow: hidden; }
+    .logo-img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .title { font-size: 42px; font-weight: bold; color: #111; margin-bottom: 10px; letter-spacing: -1px; }
+    
+    .subtitle { font-size: 18px; font-weight: bold; color: #555; margin-bottom: 50px; letter-spacing: -0.5px; }
+    .point-text { font-size: 32px; color: #4caf50; font-weight: 900; vertical-align: middle; }
+    
+    .input-group { width: 85%; max-width: 350px; margin-bottom: 12px; }
+    .input-field { width: 100%; padding: 18px 20px; border-radius: 15px; border: 1px solid #e0e0e0; font-size: 15px; background: #fafafa; transition: 0.3s; font-family: 'Malgun Gothic', sans-serif; pointer-events: auto; }
+    .input-field:focus { border-color: #4caf50; background: #fff; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
+    
+    .login-btn { width: 85%; max-width: 350px; padding: 18px; border-radius: 15px; background: #4caf50; color: #fff; font-size: 18px; font-weight: bold; border: none; cursor: pointer; margin-top: 15px; box-shadow: 0 6px 15px rgba(76,175,80,0.3); transition: 0.2s; pointer-events: auto; }
+    .login-btn:active { transform: scale(0.97); }
+    
+    .signup-link { margin-top: 30px; font-size: 14px; color: #888; pointer-events: auto; cursor: pointer; }
+    .signup-link span { color: #4caf50; font-weight: bold; margin-left: 5px; text-decoration: underline; }
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <img src="bg.png" class="bg-img">
 
-    <input type="email" id="email" class="clear-input" required>
-    <input type="password" id="pw" class="clear-input" required>
-
-    <button class="clear-btn" onclick="handleLogin()"></button>
-    <div class="clear-signup" onclick="myAlert('회원가입 준비 중!')"></div>
-
-    <div class="nav-area">
-      <div class="nav-item" onclick="location.href='home.html'"></div>
-      <div class="nav-item" onclick="myAlert('준비 중!')"></div>
-      <div class="nav-item" onclick="location.href='map.html'"></div>
-      <div class="nav-item" onclick="myAlert('준비 중!')"></div>
-      <div class="nav-item" onclick="location.href='b2b.html'"></div>
-    </div>
+  <div class="logo-box">
+    <img src="logo.png" class="logo-img">
   </div>
+  
+  <div class="title">Oi</div>
+  
+  <div class="subtitle">
+    <span class="point-text">오</span>픈해줘 <span class="point-text">이</span>곳에
+  </div>
+  
+  <div class="input-group">
+    <input type="email" class="input-field" id="email" placeholder="이메일 주소" autocomplete="off">
+  </div>
+  <div class="input-group">
+    <input type="password" class="input-field" id="pw" placeholder="비밀번호">
+  </div>
+  
+  <button class="login-btn" onclick="handleLogin()">로그인</button>
+  
+  <div class="signup-link" onclick="myAlert('회원가입 페이지는 열심히 준비 중입니다!')">아직 계정이 없으신가요? <span>회원가입</span></div>
 
   <script>
     function myAlert(msg) { alert(msg); }
+    
     function handleLogin() {
       var email = document.getElementById('email').value;
       var pw = document.getElementById('pw').value;
+      
       if(email === '' || pw === '') {
-        myAlert('이메일과 비밀번호를 모두 입력해주세요! 🥒');
+        myAlert('이메일과 비밀번호를 모두 입력해주세요!');
         return;
       }
+      
       location.href = 'home.html';
     }
   </script>
