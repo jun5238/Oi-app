@@ -15,7 +15,6 @@
     .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: width 0.1s, height 0.1s, font-size 0.1s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); pointer-events: auto; cursor: pointer; transform-origin: bottom center; }
     .growth-card { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; border: 1px solid rgba(76,175,80,0.2); }
     .card-title { font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 15px; color: #333; }
-    .point-color { color: #4caf50; }
     .timeline { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .step { width: 40px; height: 40px; background: #f0f0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; transition: 0.3s; border: 2px solid #eee; }
     .step-active { border-color: #4caf50; background: #e8f5e9; transform: scale(1.1); box-shadow: 0 0 10px rgba(76,175,80,0.3); }
@@ -86,7 +85,7 @@
                 });
             });
         };
-        script.head.appendChild(script);
+        document.head.appendChild(script);
     };
     function drawMarker() {
       if (currentOverlay) currentOverlay.setMap(null);
@@ -96,7 +95,7 @@
       currentPinElement.innerHTML = s.icon;
       currentPinElement.onclick = function(e) { 
         showSheet(); 
-        kakao.maps.event.preventNextClick(); 
+        if(window.event) window.event.cancelBubble = true;
       };
       currentOverlay = new kakao.maps.CustomOverlay({ position: currentLatLng, content: currentPinElement, yAnchor: 1, zIndex: 3 });
       currentOverlay.setMap(map);
