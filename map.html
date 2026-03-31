@@ -8,73 +8,49 @@
   <style>
     * { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; outline: none !important; }
     body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; background: #fff; }
-    #real-map { position: absolute; top: 0; left: 0; width: 100%; bottom: 75px; z-index: 1; background: #e9ecef; }
+    #real-map { position: absolute; top: 0; left: 0; width: 100%; bottom: 75px; z-index: 1; background: #f8f9fa; }
     .floating-top { position: absolute; top: 15px; left: 0; width: 100%; z-index: 1000; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
-    .search-bar { background: #fff; border-radius: 5px; padding: 12px 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; pointer-events: auto; cursor: pointer; }
-    .search-text { color: #888; font-size: 15px; font-weight: bold; pointer-events: none; }
-    
-    /* 👈 새싹/오이 사이즈를 현실적이고 캐주얼하게 수정했습니다! */
-    .brand-pin { 
-      display: flex; justify-content: center; align-items: flex-end; 
-      transition: all 0.3s; 
-      pointer-events: auto; cursor: pointer; 
-      transform-origin: bottom center;
-    }
-    
-    /* 👈 처음엔 숨겨둡니다! */
-    .bottom-sheet { position: absolute; bottom: 75px; left: 0; width: 100%; background: #fff; border-radius: 25px 25px 0 0; padding: 25px 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; pointer-events: auto; }
-    
-    .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 3px; margin: 0 auto 20px; }
-    .sheet-title { font-size: 22px; font-weight: bold; text-align: center; margin: 0 0 10px 0; color: #111; pointer-events: none; }
-    .sheet-info { text-align: center; font-size: 14px; font-weight: bold; color: #555; margin-bottom: 25px; pointer-events: none; }
+    .search-bar { background: #fff; border-radius: 12px; padding: 12px 18px; display: flex; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #eee; pointer-events: auto; cursor: pointer; }
+    .search-text { color: #555; font-size: 14px; font-weight: bold; pointer-events: none; }
+    .brand-pin { display: flex; justify-content: center; align-items: flex-end; transition: width 0.1s, height 0.1s, font-size 0.1s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); pointer-events: auto; cursor: pointer; transform-origin: bottom center; }
+    .growth-card { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; box-sizing: border-box; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; border: 1px solid rgba(76,175,80,0.2); }
+    .card-title { font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 15px; color: #333; }
     .point-color { color: #4caf50; }
-    .timeline-container { display: flex; justify-content: space-between; align-items: center; position: relative; margin-bottom: 30px; padding: 0 5px; pointer-events: none; }
-    .timeline-line { position: absolute; top: 30px; left: 30px; right: 30px; height: 4px; background: #eee; z-index: 1; }
-    .timeline-line-fill { position: absolute; top: 0; left: 0; height: 100%; background: #4caf50; width: 0%; transition: width 0.5s; }
-    .timeline-step { display: flex; flex-direction: column; align-items: center; z-index: 2; position: relative; }
-    .step-circle { width: 60px; height: 60px; background: #fff; border: 3px solid #eee; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; transition: all 0.3s; }
-    .step-active .step-circle { border-color: #4caf50; box-shadow: 0 0 15px rgba(76,175,80,0.4); transform: scale(1.15); }
-    .step-done .step-circle { border-color: #4caf50; background: #e8f5e9; }
-    .step-label { font-size: 12px; font-weight: bold; color: #999; margin-top: 10px; }
-    .step-active .step-label { color: #4caf50; }
-    .plant-btn { width: 100%; height: 60px; border-radius: 12px; font-weight: bold; font-size: 20px; border: none; background: #4caf50; color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(76,175,80,0.4); pointer-events: auto; }
-    .plant-btn:active { transform: scale(0.98); }
-    .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; display: flex; background: #fff; padding: 0; border-top: 1px solid #eee; z-index: 9999; height: 75px; box-sizing: border-box; }
-    .nav-item { flex: 1; text-align: center; color: #aaa; font-weight: bold; text-decoration: none; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; height: 100%; pointer-events: auto; }
+    .timeline { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .step { width: 40px; height: 40px; background: #f0f0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; transition: 0.3s; border: 2px solid #eee; }
+    .step-active { border-color: #4caf50; background: #e8f5e9; transform: scale(1.1); box-shadow: 0 0 10px rgba(76,175,80,0.3); }
+    .plant-btn { width: 100%; height: 50px; border-radius: 25px; font-weight: bold; font-size: 16px; border: none; background: #4caf50; color: #fff; box-shadow: 0 4px 10px rgba(76,175,80,0.3); }
+    .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; display: flex; background: #fff; border-top: 1px solid #f0f0f0; z-index: 9999; height: 75px; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #bbb; text-decoration: none; font-size: 11px; font-weight: bold; }
     .nav-active { color: #333; }
-    .nav-icon { font-size: 24px; line-height: 1.2; }
-    .nav-text { font-size: 11px; margin-top: 4px; pointer-events: none; }
+    .nav-icon { font-size: 22px; margin-bottom: 4px; }
   </style>
 </head>
 <body>
   <div id="real-map"></div>
   <div class="floating-top">
     <div class="search-bar" onclick="window.location.href=window.location.pathname+'?v='+new Date().getTime();">
-      <div class="search-text">지도를 터치해서 심어보세요! (안 보이면 터치🔄)</div>
+      <div class="search-text">🌱 지도를 터치해 오이를 심어주세요!</div>
     </div>
   </div>
-  <div class="bottom-sheet" id="water-sheet">
-    <div class="sheet-handle"></div>
-    <h2 class="sheet-title" id="stage-name">내 오이 키우기 🌱</h2>
-    <div class="sheet-info">다음 성장까지 물 <span class="point-color" id="need-water">3</span>번 필요</div>
-    <div class="timeline-container">
-      <div class="timeline-line"><div class="timeline-line-fill" id="timeline-fill"></div></div>
-      <div class="timeline-step step-active" id="step-0"><div class="step-circle">🌱</div><div class="step-label">새싹</div></div>
-      <div class="timeline-step" id="step-1"><div class="step-circle">🌿</div><div class="step-label">줄기</div></div>
-      <div class="timeline-step" id="step-2"><div class="step-circle">🌼</div><div class="step-label">꽃</div></div>
-      <div class="timeline-step" id="step-3"><div class="step-circle">🥒</div><div class="step-label">애기오이</div></div>
-      <div class="timeline-step" id="step-4"><div class="step-circle">🥒✨</div><div class="step-label">성인오이</div></div>
+  <div class="growth-card" id="water-sheet">
+    <div class="card-title" id="stage-name">오이 성장 일기 🌱</div>
+    <div class="timeline">
+      <div class="step step-active" id="step-0">🌱</div>
+      <div class="step" id="step-1">🌿</div>
+      <div class="step" id="step-2">🌼</div>
+      <div class="step" id="step-3">🥒</div>
+      <div class="step" id="step-4">🥒✨</div>
     </div>
-    <button class="plant-btn" onclick="giveWater()">오이 물주기 💦</button>
+    <button class="plant-btn" onclick="giveWater()">물 주기 💦 (남은 횟수: <span id="need-water">3</span>)</button>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="location.href='home.html'"><span class="nav-icon">🏠</span><span class="nav-text">홈</span></div>
-    <div class="nav-item" onclick="myAlert('커뮤니티 준비 중!')"><span class="nav-icon">🏘️</span><span class="nav-text">커뮤니티</span></div>
-    <div class="nav-item nav-active" onclick="location.href='map.html'"><span class="nav-icon">📍</span><span class="nav-text">동네지도</span></div>
-    <div class="nav-item" onclick="myAlert('채팅창 준비 중!')"><span class="nav-icon">💬</span><span class="nav-text">채팅</span></div>
-    <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span><span class="nav-text">마이</span></div>
+    <div class="nav-item" onclick="location.href='home.html'"><span class="nav-icon">🏠</span>홈</div>
+    <div class="nav-item" onclick="myAlert('준비 중!')"><span class="nav-icon">🏘️</span>커뮤니티</div>
+    <div class="nav-item nav-active" onclick="location.href='map.html'"><span class="nav-icon">📍</span>동네지도</div>
+    <div class="nav-item" onclick="myAlert('준비 중!')"><span class="nav-icon">💬</span>채팅</div>
+    <div class="nav-item" onclick="location.href='b2b.html'"><span class="nav-icon">👤</span>마이</div>
   </div>
-
   <script>
     function myAlert(msg) { alert(msg); }
     var map;
@@ -82,80 +58,76 @@
     var waterCount = 0;
     var currentStage = 0;
     var currentLatLng = null;
+    var currentPinElement = null;
+    var baseLevel = 4;
     var stages = [
-      { icon: '🌱', max: 3, baseSize: 35 },
-      { icon: '🌿', max: 7, baseSize: 50 },
-      { icon: '🌼', max: 12, baseSize: 65 },
-      { icon: '🥒', max: 20, baseSize: 80 },
-      { icon: '🥒✨', max: 30, baseSize: 100 }
+      { icon: '🌱', max: 3, baseSize: 50 },
+      { icon: '🌿', max: 7, baseSize: 70 },
+      { icon: '🌼', max: 12, baseSize: 90 },
+      { icon: '🥒', max: 20, baseSize: 110 },
+      { icon: '🥒✨', max: 30, baseSize: 140 }
     ];
-
     window.onload = function() {
         var script = document.createElement('script');
         script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cabaf8ffe846f234421d25cc947dea15&autoload=false";
         script.onload = function() {
             kakao.maps.load(function() {
                 var mapContainer = document.getElementById('real-map');
-                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: 4 };
+                var mapOption = { center: new kakao.maps.LatLng(36.7766, 127.0229), level: baseLevel };
                 map = new kakao.maps.Map(mapContainer, mapOption);
-                
                 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
                   if (currentOverlay) { currentOverlay.setMap(null); }
                   waterCount = 0; currentStage = 0; currentLatLng = mouseEvent.latLng;
                   drawMarker();
-                  
-                  // 👈 지도를 터치했을 땐 아래 창을 닫아둡니다!!
                   document.getElementById('water-sheet').style.display = 'none';
+                });
+                kakao.maps.event.addListener(map, 'zoom_changed', function() {
+                  updatePinSize();
                 });
             });
         };
-        script.onerror = function() {
-            myAlert("카카오맵 기능 설정을 확인해주세요!");
-        };
-        document.head.appendChild(script);
+        script.head.appendChild(script);
     };
-
     function drawMarker() {
       if (currentOverlay) currentOverlay.setMap(null);
       var s = stages[currentStage];
-      var content = document.createElement('div');
-      content.className = 'brand-pin';
-      
-      // 👈 사이즈를 캐주얼하게 줄였습니다!
-      content.style.width = s.baseSize + 'px';
-      content.style.height = s.baseSize + 'px';
-      content.style.fontSize = s.baseSize + 'px';
-      
-      content.innerHTML = s.icon;
-      
-      // 👈 오이를 터치할 때만 아래 창이 뜹니다!!
-      content.onclick = function() { showSheet(); };
-      
-      currentOverlay = new kakao.maps.CustomOverlay({ position: currentLatLng, content: content, yAnchor: 1, zIndex: 3 });
+      currentPinElement = document.createElement('div');
+      currentPinElement.className = 'brand-pin';
+      currentPinElement.innerHTML = s.icon;
+      currentPinElement.onclick = function(e) { 
+        showSheet(); 
+        kakao.maps.event.preventNextClick(); 
+      };
+      currentOverlay = new kakao.maps.CustomOverlay({ position: currentLatLng, content: currentPinElement, yAnchor: 1, zIndex: 3 });
       currentOverlay.setMap(map);
+      updatePinSize();
     }
-
+    function updatePinSize() {
+      if(!currentPinElement) return;
+      var level = map.getLevel();
+      var scale = Math.pow(0.5, level - baseLevel);
+      var s = stages[currentStage];
+      var finalSize = Math.max(5, s.baseSize * scale);
+      currentPinElement.style.width = finalSize + 'px';
+      currentPinElement.style.height = finalSize + 'px';
+      currentPinElement.style.fontSize = finalSize + 'px';
+    }
     function showSheet() { document.getElementById('water-sheet').style.display = 'block'; updateUI(); }
-
     function giveWater() {
-      if (currentStage >= stages.length - 1 && waterCount >= stages[currentStage].max) { myAlert('🎉 성인 오이 수확 완료!!'); return; }
+      if (currentStage >= stages.length - 1 && waterCount >= stages[currentStage].max) { myAlert('🎉 수확 완료!!'); return; }
       waterCount++;
       if (waterCount >= stages[currentStage].max && currentStage < stages.length - 1) {
-        currentStage++; myAlert('🌟 오이 폭풍 성장!!'); drawMarker();
+        currentStage++; myAlert('🌟 성장 완료!!'); drawMarker();
       } else { myAlert('💦 물 주기 완료!'); }
       updateUI();
     }
-
     function updateUI() {
-      var stageInfo = stages[currentStage];
-      document.getElementById('stage-name').innerText = '내 오이 키우기 ' + stageInfo.icon;
-      var remain = Math.max(0, stageInfo.max - waterCount);
+      var s = stages[currentStage];
+      var remain = Math.max(0, s.max - waterCount);
       document.getElementById('need-water').innerText = remain;
       for(var i = 0; i < 5; i++) {
-        var el = document.getElementById('step-' + i);
-        el.className = i < currentStage ? 'timeline-step step-done' : (i === currentStage ? 'timeline-step step-active' : 'timeline-step');
+        document.getElementById('step-' + i).className = i === currentStage ? 'step step-active' : 'step';
       }
-      document.getElementById('timeline-fill').style.width = ((currentStage / 4) * 100) + '%';
     }
   </script>
 </body>
